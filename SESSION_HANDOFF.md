@@ -6,10 +6,12 @@
 - Rebuilt `src/ai_pnp/ui/desktop/main_window.py` into a more usable single-window desktop surface with clearer narration hierarchy, status, quests, inventory, visible NPCs, and a recent-action log.
 - Kept UI callbacks thin: they only trigger engine methods, manage widget state, and refresh the view.
 - Added desktop-focused smoke coverage and verified action, save, and load through the window against the local engine.
+- Added `Start_AI-PnP.bat` in the repo root as a Windows launcher for the current desktop start path.
 
 ## Current repo state
 - `src/` now contains only `src/ai_pnp/` as the canonical application tree.
 - `main.py` still launches `Application.run()`, which starts the desktop app by default and can still fall back to CLI mode.
+- `Start_AI-PnP.bat` now provides a direct Windows launcher for the desktop app.
 - The CLI interaction path is now `scripts/run_cli.py` or `Application.run_cli()` -> `src/ai_pnp/ui/cli/runner.py` -> `GameEngine`.
 - `GameEngine` no longer owns a direct input loop or console output.
 - The desktop window now shows:
@@ -41,6 +43,7 @@
 - `ARCHITECTURE.md`
 - `SESSION_HANDOFF.md`
 - `main.py`
+- `Start_AI-PnP.bat`
 - `pyproject.toml`
 - `src/ai_pnp/core/application.py`
 - `src/ai_pnp/core/app_config.py`

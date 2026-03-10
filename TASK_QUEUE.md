@@ -55,3 +55,9 @@ Status: Completed
 Relevant files: `src/ai_pnp/ui/desktop/main_window.py`, `src/ai_pnp/engine/game_engine.py`, `tests/test_engine_smoke.py`
 Expected outcome: Better readability, clearer layout, more visible gameplay data, and light desktop smoke coverage.
 Notes: Completed with structured story presentation, character/quest/inventory/NPC/log panels, and UI-focused smoke validation.
+
+3. Add a direct Windows launcher for the current desktop start path.
+Status: Completed
+Relevant files: `Start_AI-PnP.bat`, `README.md`
+Expected outcome: The project can be started on Windows by double-click without manually typing the Python command.
+Notes: Completed as a root batch launcher that tries `pyw`, `pythonw`, `py`, and `python` in that order.

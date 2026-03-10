@@ -12,6 +12,7 @@
 - The working tree was clean before this session started.
 - `src/` now contains only the canonical application package `src/ai_pnp/`.
 - `main.py` now starts `Application.run()`.
+- `Start_AI-PnP.bat` exists in the repository root as a Windows double-click launcher for the current desktop start path.
 - The active runtime path is `main.py` -> `Application` -> desktop mode or CLI runner -> `ai_pnp.engine.game_engine.GameEngine`.
 - `Application` currently reads `ui_mode` from `src/ai_pnp/data/config/app_config.json`.
 - The default local `ui_mode` is `desktop`.
@@ -73,6 +74,7 @@
 - The desktop UI was upgraded from a bare prototype to a more usable play surface with clearer narration hierarchy, inventory, NPC/interactions, and recent-action panels.
 - The engine was extended minimally for UI display with `get_world_status()`, `get_inventory()`, and `get_visible_npcs()`.
 - Desktop-adjacent smoke coverage was added and the current local suite now passes with `12` tests.
+- A root Windows launcher file was added so the project can be started by double-click without typing the Python command manually.
 
 ## Known issues
 - Persistence is currently JSON based, while the documented MVP target says SQLite.

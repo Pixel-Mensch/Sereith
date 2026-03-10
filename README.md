@@ -46,6 +46,12 @@ while avoiding direct use of protected setting IP.
 python main.py
 ```
 
+Oder unter Windows per Doppelklick:
+
+```text
+Start_AI-PnP.bat
+```
+
 ## Run CLI
 
 Set `"ui_mode": "cli"` in `src/ai_pnp/data/config/app_config.json`, then run:
@@ -79,6 +85,7 @@ pytest -q
 - `tkinter` window creation works locally.
 - `MainWindow` can be instantiated, refreshed, and driven through an action plus save/load.
 - `12` focused tests currently pass.
+- A root Windows launcher file exists and points at the current desktop start path.
 
 ## Notes
 
