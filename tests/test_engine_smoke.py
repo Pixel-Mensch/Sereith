@@ -1,4 +1,5 @@
 from pathlib import Path
+import json
 
 from ai_pnp.core.app_config import AppConfig
 from ai_pnp.engine.flow.turn_processor import TurnProcessor
@@ -110,3 +111,31 @@ def test_scene_change_updates_scene_memory(tmp_path: Path) -> None:
     assert current_scene["scene_id"] == "inn_front"
     assert "laterne" in current_scene["scene_objects"]
     assert current_scene["npc_present"] == []
+
+
+def test_engine_ui_methods_return_simple_data(tmp_path: Path) -> None:
+    engine = build_engine(tmp_path)
+
+    result = engine.process_player_action("frage die wirtin nach dem kurier")
+
+    assert result["ok"] is True
+    assert result["narration"]
+    assert isinstance(engine.get_player_status(), dict)
+    assert isinstance(engine.get_current_scene(), dict)
+    assert isinstance(engine.get_active_quests(), list)
+    assert isinstance(engine.get_last_narration(), str)
+    assert isinstance(engine.get_recent_log(), list)
+
+
+def test_save_and_load_api_are_ui_friendly_and_serializable(tmp_path: Path) -> None:
+    engine = build_engine(tmp_path)
+    engine.process_player_action("frage die wirtin nach dem kurier")
+
+    saved = engine.save_game("ui_slot")
+    reloaded = build_engine(tmp_path)
+    loaded = reloaded.load_game("ui_slot")
+
+    assert saved["ok"] is True
+    assert loaded["ok"] is True
+    assert loaded["scene"]["scene_id"] == reloaded.state.world.current_scene_id
+    json.dumps(reloaded.state.to_dict())

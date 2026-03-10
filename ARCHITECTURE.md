@@ -4,13 +4,14 @@
 - Python application layer owns rules, persistence, state transitions, and orchestration.
 - The LLM provides narration and optional structured state-update proposals only.
 - Persistent game data is intended to move toward SQLite, with JSON files for world definitions, prompt templates, and config.
-- UI should remain replaceable. CLI exists now; desktop or local web UI can follow later.
+- UI should remain replaceable. The current local implementation now has desktop and CLI entry modes over the same engine core.
 
 ## Current verified local architecture
 - Active entry point: `main.py`
 - Alternate CLI entry point: `scripts/run_cli.py`
 - Runtime path: `main.py` -> `ai_pnp.core.application.Application` -> `ai_pnp.engine.game_engine.GameEngine`
 - Core package: `src/ai_pnp/`
+- Current default launch mode: `desktop` via `src/ai_pnp/data/config/app_config.json`
 - Main services currently wired into the application:
   - `services/content/scene_repository.py`
   - `services/content/quest_repository.py`
@@ -26,7 +27,10 @@
   - `engine/parsing/action_interpreter.py`
   - `engine/flow/turn_processor.py`
   - `engine/state/state_updater.py`
-- Current UI path: CLI loop inside `src/ai_pnp/engine/game_engine.py`
+- Current UI paths:
+  - desktop window in `src/ai_pnp/ui/desktop/main_window.py`
+  - desktop launcher in `src/ai_pnp/ui/desktop/app.py`
+  - CLI loop inside `src/ai_pnp/engine/game_engine.py`
 - Current persistence path: JSON autosave under `src/ai_pnp/data/saves/`
 
 ## Verified modules
@@ -35,13 +39,15 @@
 - `src/ai_pnp/engine/`: active engine flow for commands, interpretation, turn processing, and state updates.
 - `src/ai_pnp/services/`: scene, quest, and NPC loading; memory and summary services; prompt building; Ollama/fallback narration; and persistence.
 - `src/ai_pnp/ui/cli/`: CLI runner wrapper.
-- `src/ai_pnp/ui/desktop/`: placeholder desktop app module.
+- `src/ai_pnp/ui/desktop/`: first `tkinter` desktop prototype over the engine API.
 - `src/ai_pnp/content/`: JSON-backed world, scenario, NPC, quest, and prompt content.
 - `docs/module-maps/`: short handwritten module summaries.
 
 ## Important flows
 - Current startup flow:
-  `main.py` -> `Application` -> config + repositories + engine services -> `GameEngine.run_cli()`
+  `main.py` -> `Application` -> config + repositories + engine services -> `Application.run()` -> desktop or CLI mode
+- Current desktop flow:
+  `MainWindow` -> engine UI methods (`get_*`, `process_player_action`, `save_game`, `load_game`) -> engine/services -> UI refresh
 - Current turn flow:
   player text input -> command handling or `TurnProcessor` -> `ActionInterpreter` -> content-backed action lookup -> `PromptBuilder` -> `NarratorClient` -> `StateUpdater` -> `MemoryService` -> `SessionSummaryService` -> autosave
 - Current persistence flow:
@@ -57,15 +63,16 @@
 - Until documented otherwise, treat `src/ai_pnp/` as the canonical application path and the parallel folders as unresolved structure.
 - Older local placeholder modules such as `content_loader.py`, `memory_service.py`, and `rules_engine.py` remain present but are not part of the active runtime path.
 - The live Ollama provider path is implemented, but successful model output was not verifiable in this session because the local service was unreachable.
+- The desktop UI is currently synchronous and therefore sensitive to slow narrator calls.
 
 ## Important files and current role
-- `main.py`: root CLI entry point with local `src` path bootstrap.
+- `main.py`: root entry point with local `src` path bootstrap and mode dispatch through `Application.run()`.
 - `pyproject.toml`: minimal Python packaging metadata for the `src` layout.
 - `scripts/run_cli.py`: alternate CLI launcher with the same local import bootstrap.
-- `src/ai_pnp/core/application.py`: wires config, repositories, narrator, and engine services into the runtime.
+- `src/ai_pnp/core/application.py`: wires config, repositories, narrator, and engine services into the runtime and launches desktop or CLI mode.
 - `src/ai_pnp/core/app_config.py`: loads the local runtime configuration from JSON.
 - `src/ai_pnp/core/models/npc_memory.py`: persistent per-NPC memory records.
-- `src/ai_pnp/engine/game_engine.py`: owns CLI command handling, initial state creation, and runtime orchestration.
+- `src/ai_pnp/engine/game_engine.py`: owns initial state creation, CLI command handling, UI-friendly engine methods, and runtime orchestration.
 - `src/ai_pnp/engine/flow/turn_processor.py`: executes the per-turn pipeline.
 - `src/ai_pnp/engine/parsing/action_interpreter.py`: classifies raw player actions into coarse intents.
 - `src/ai_pnp/engine/state/state_updater.py`: applies deterministic state changes and turn logging.
@@ -77,7 +84,9 @@
 - `src/ai_pnp/services/llm/ollama_client.py`: encapsulates the local Ollama HTTP call.
 - `src/ai_pnp/services/llm/narrator_client.py`: narrator facade with provider selection and fallback handling.
 - `src/ai_pnp/services/storage/save_repository.py`: current JSON save/load implementation.
-- `tests/test_engine_smoke.py`: current focused engine and memory regression test set.
+- `src/ai_pnp/ui/desktop/app.py`: thin launcher for the desktop app.
+- `src/ai_pnp/ui/desktop/main_window.py`: first `tkinter` window with story, status, quests, and save/load controls.
+- `tests/test_engine_smoke.py`: current focused engine, memory, save/load, and engine-API regression test set.
 
 ## Principles
 - UI must not own game logic.

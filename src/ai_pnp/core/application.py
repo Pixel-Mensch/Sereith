@@ -1,3 +1,5 @@
+import tkinter as tk
+
 from ai_pnp.core.app_config import AppConfig
 from ai_pnp.engine.flow.turn_processor import TurnProcessor
 from ai_pnp.engine.game_engine import GameEngine
@@ -44,5 +46,19 @@ class Application:
             turn_processor=self.turn_processor,
         )
 
+    def run(self) -> None:
+        if self.app_config.ui_mode.lower().strip() == "desktop":
+            self.run_desktop()
+            return
+        self.run_cli()
+
     def run_cli(self) -> None:
         self.engine.run_cli()
+
+    def run_desktop(self) -> None:
+        from ai_pnp.ui.desktop.app import DesktopApp
+
+        try:
+            DesktopApp(self.engine).launch()
+        except tk.TclError:
+            self.run_cli()

@@ -66,6 +66,20 @@ class GameEngine:
             "temporary_scene_flags": list(self.state.world.temporary_scene_flags),
         }
 
+    def get_last_narration(self) -> str:
+        return self.state.last_narration
+
+    def get_status_message(self) -> str:
+        return self.state.status_message
+
+    def get_save_name(self) -> str:
+        return self.state.save_name
+
+    def get_recent_log(self, limit: int = 5) -> list[dict]:
+        if limit <= 0:
+            return []
+        return [dict(entry) for entry in self.state.turn_log[-limit:]]
+
     def describe_current_scene(self) -> str:
         scene = self.get_current_scene()
         return f"{scene['title']}\n{scene['description']}"
@@ -95,23 +109,77 @@ class GameEngine:
             f"Status: {self.state.status_message or '-'}"
         )
 
-    def save_game(self, save_name: str | None = None) -> EngineResponse:
-        self.save_repository.save(self.state, save_name=save_name)
-        self.state.status_message = f"Spielstand gespeichert: {self.state.save_name}"
-        return EngineResponse(self.state.status_message)
+    def new_game(self, save_name: str | None = None) -> dict:
+        self.state = self._create_initial_state(save_name=save_name or "autosave")
+        return {
+            "ok": True,
+            "message": "Neue Sitzung gestartet.",
+            "save_name": self.state.save_name,
+            "scene": self.get_current_scene(),
+            "narration": self.get_last_narration(),
+            "status_message": self.state.status_message,
+        }
 
-    def load_game(self, save_name: str | None = None) -> EngineResponse:
+    def save_game(self, save_name: str | None = None) -> dict:
+        try:
+            path = self.save_repository.save(self.state, save_name=save_name)
+        except OSError as exc:
+            return {
+                "ok": False,
+                "message": f"Spielstand konnte nicht gespeichert werden: {exc}",
+            }
+        self.state.status_message = f"Spielstand gespeichert: {self.state.save_name}"
+        return {
+            "ok": True,
+            "message": self.state.status_message,
+            "save_name": self.state.save_name,
+            "path": str(path),
+        }
+
+    def load_game(self, save_name: str | None = None) -> dict:
         target = save_name or self.state.save_name
         if not self.save_repository.exists(target):
-            return EngineResponse(f"Kein Spielstand gefunden: {target}")
-        self.state = self.save_repository.load(target)
+            return {
+                "ok": False,
+                "message": f"Kein Spielstand gefunden: {target}",
+            }
+        try:
+            self.state = self.save_repository.load(target)
+        except (OSError, ValueError) as exc:
+            return {
+                "ok": False,
+                "message": f"Spielstand konnte nicht geladen werden: {exc}",
+            }
         self.state.status_message = f"Spielstand geladen: {target}"
-        return EngineResponse(f"{self.state.status_message}\n\n{self.describe_current_scene()}")
+        return {
+            "ok": True,
+            "message": self.state.status_message,
+            "save_name": self.state.save_name,
+            "scene": self.get_current_scene(),
+            "narration": self.get_last_narration(),
+            "status_message": self.state.status_message,
+        }
 
-    def process_player_action(self, action: str):
-        return self.turn_processor.process_turn(self.state, action)
+    def process_player_action(self, action: str) -> dict:
+        cleaned_action = action.strip()
+        if not cleaned_action:
+            return {
+                "ok": False,
+                "message": "Leere Eingabe ignoriert.",
+            }
 
-    def process_action(self, action: str):
+        result = self.turn_processor.process_turn(self.state, cleaned_action)
+        return {
+            "ok": True,
+            "narration": result.narration,
+            "prompt": result.prompt,
+            "system_note": result.system_note,
+            "provider": result.narrator_provider,
+            "status_message": self.state.status_message,
+            "scene": self.get_current_scene(),
+        }
+
+    def process_action(self, action: str) -> dict:
         return self.process_player_action(action)
 
     def handle_input(self, raw_input: str) -> EngineResponse:
@@ -124,17 +192,23 @@ class GameEngine:
             return EngineResponse("Spiel beendet.", should_quit=True)
         if lowered.startswith("save"):
             parts = action.split(maxsplit=1)
-            return self.save_game(parts[1].strip() if len(parts) > 1 else None)
+            result = self.save_game(parts[1].strip() if len(parts) > 1 else None)
+            return EngineResponse(result["message"])
         if lowered.startswith("load"):
             parts = action.split(maxsplit=1)
-            return self.load_game(parts[1].strip() if len(parts) > 1 else None)
+            result = self.load_game(parts[1].strip() if len(parts) > 1 else None)
+            if not result["ok"]:
+                return EngineResponse(result["message"])
+            return EngineResponse(f"{result['message']}\n\n{self.describe_current_scene()}")
         if lowered == "state":
             return EngineResponse(self.render_state_summary())
 
         result = self.process_player_action(action)
-        message = result.narration
-        if result.system_note:
-            message = f"{message}\n\n[System: {result.system_note}]"
+        if not result["ok"]:
+            return EngineResponse(result["message"])
+        message = result["narration"]
+        if result["system_note"]:
+            message = f"{message}\n\n[System: {result['system_note']}]"
         return EngineResponse(message)
 
     def run_cli(self) -> None:

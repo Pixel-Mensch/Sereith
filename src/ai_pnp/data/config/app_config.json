@@ -1,7 +1,7 @@
 {
   "project_name": "AI-PnP",
   "language": "de",
-  "ui_mode": "cli",
+  "ui_mode": "desktop",
   "llm_provider": "ollama",
   "ollama_model": "qwen2.5:7b",
   "ollama_host": "http://localhost:11434",

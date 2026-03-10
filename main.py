@@ -9,7 +9,7 @@ from ai_pnp.core.application import Application
 
 def main() -> None:
     app = Application()
-    app.run_cli()
+    app.run()
 
 if __name__ == "__main__":
     main()

@@ -6,8 +6,17 @@ The actual rules, state, memory, and persistence live in the application core.
 
 ## Current local runtime
 
-- `main.py` starts the CLI application.
+- `main.py` starts the desktop application by default.
 - The active runtime path is `Application -> GameEngine -> TurnProcessor`.
+- `Application` reads `src/ai_pnp/data/config/app_config.json` and launches either:
+  - desktop mode via `tkinter`
+  - CLI mode when `ui_mode` is set to `cli`
+- The desktop prototype currently provides:
+  - scrollable story view
+  - free-text player input
+  - player and location status
+  - active quest overview
+  - `Neues Spiel`, `Speichern`, `Laden`, and `Aktualisieren`
 - Commands currently supported in the CLI:
   - `state`
   - `save [name]`
@@ -21,13 +30,22 @@ The actual rules, state, memory, and persistence live in the application core.
   - Ollama-backed narration with safe fallback
   - JSON save/load and autosave
   - scene memory, short-term memory, long-term memory, and session summaries
+  - UI-friendly engine methods for scene, narration, player status, quests, save/load, and recent log access
 
 ## Current direction
 
 The project is designed to stay legally publishable by using a Pathfinder-compatible rules approach
 while avoiding direct use of protected setting IP.
 
-## Run
+## Run desktop
+
+```python
+python main.py
+```
+
+## Run CLI
+
+Set `"ui_mode": "cli"` in `src/ai_pnp/data/config/app_config.json`, then run:
 
 ```python
 python main.py
@@ -41,6 +59,7 @@ python main.py
   - `ollama_model = "qwen2.5:7b"`
   - `ollama_host = "http://localhost:11434"`
 - If Ollama is not running or the model is missing, the CLI falls back to a local placeholder narrator and keeps the game running.
+- The same fallback path is used in the desktop prototype, so the app remains playable without a live Ollama service.
 
 ## Test
 
@@ -48,14 +67,19 @@ python main.py
 pytest -q
 ```
 
-## Planned UI
+## Verified in the latest local session
 
-The architecture is UI-agnostic.
-It can start with CLI, move to desktop later, and still support a web UI in the future.
+- Engine initialization works.
+- Turn processing works.
+- JSON save/load works.
+- `GameState` remains serializable.
+- `tkinter` window creation works locally.
+- `MainWindow` can be instantiated and refreshed against the current engine.
+- `8` focused tests currently pass.
 
 ## Notes
 
 - Current verified persistence is JSON save/load under `src/ai_pnp/data/saves/`.
 - SQLite remains the documented MVP target, not the current local implementation.
 - In the latest local validation run, the fallback narrator path was exercised because Ollama was not reachable from the environment.
-- The engine now exposes UI-ready methods for player status, active quests, current scene, and player-action processing.
+- The desktop UI is intentionally thin: game logic stays in `GameEngine`, `TurnProcessor`, and related services.

@@ -1,33 +1,34 @@
 # SESSION_HANDOFF.md
 
 ## Session summary
-- Built the first actually playable mini-flow around the missing courier.
-- Added content-backed scene, quest, NPC, and prompt data for the inn and roadside clue sequence.
-- Added an Ollama-backed narrator path behind `NarratorClient` plus a safe fallback path when the local service or model is unavailable.
-- Expanded deterministic state progression for discovery flags, quest progress, scene transitions, and turn logging.
-- Expanded tests to cover turn processing, save/load, scene changes, and first clue progression.
-- Added a layered memory system with scene memory, short-term memory, long-term memory, NPC memory, and generated session summaries.
-- Extended the quest model and save/load flow so campaign-relevant state persists more cleanly.
+- Verified the existing engine, memory, save/load, and startup path locally before adding new UI work.
+- Fixed the engine/UI integration gap where `load_game()` had not been shaped for UI-friendly use.
+- Stabilized the engine API with `get_last_narration()`, `get_recent_log()`, dict-based `save_game()`, dict-based `load_game()`, and dict-based `process_player_action()`.
+- Replaced the placeholder desktop module with a working `tkinter` prototype that reads only from engine methods and sends actions back through the engine.
+- Switched the default local launch mode in `app_config.json` to `desktop`.
+- Expanded tests to cover the UI-oriented engine API and serializable save/load responses.
 
 ## Current repo state
 - Canonical verified runtime path currently goes through `src/ai_pnp/engine/`.
-- `main.py` and `scripts/run_cli.py` can start the CLI path.
-- The CLI now supports a first playable inn -> outside -> clue flow.
-- Six focused tests exist and pass.
+- `main.py` now launches `Application.run()`, which starts the desktop app by default and can still fall back to CLI mode.
+- The desktop app currently shows story text, accepts free-text actions, displays status and quests, and exposes new game, save, load, and refresh controls.
+- The CLI still supports the first playable inn -> outside -> clue flow when `ui_mode` is set to `cli`.
+- Eight focused tests exist and pass.
 - Parallel folders exist under `src/` and still need an explicit structural decision.
 - Current persistence is JSON save/load, not SQLite yet.
 - `main` is the stable branch and `dev` is the current working branch.
 
 ## Validation
 - `pytest -q`
-- `python main.py`
-- Scripted CLI run covering `state`, asking about the courier, going outside, investigating the clue, saving, and loading
+- scripted engine check covering initialization, turn processing, save, load, and recent-log access
+- `tkinter` import and root-window creation
+- `MainWindow` instantiation, refresh, and destroy against the live engine
 - No build or linter command was discoverable in the minimal inspected slice.
 
 ## Recommended next action
-1. Decide how to handle the parallel `src/` folders and older placeholder modules.
-2. Verify the live Ollama path with a running local service and the configured model.
-3. Extend the mini-flow with branching reactions, follow-up consequences, and more campaign-memory retrieval logic.
+1. Verify the desktop and CLI narrator path with a running local Ollama service and the configured model.
+2. Move narrator requests off the desktop UI thread so the window stays responsive during slow responses.
+3. Decide how to handle the parallel `src/` folders and older placeholder modules.
 
 ## Relevant files
 - `AGENTS.md`
@@ -50,6 +51,8 @@
 - `src/ai_pnp/services/content/quest_repository.py`
 - `src/ai_pnp/services/content/npc_repository.py`
 - `src/ai_pnp/services/storage/save_repository.py`
+- `src/ai_pnp/ui/desktop/app.py`
+- `src/ai_pnp/ui/desktop/main_window.py`
 - `src/ai_pnp/content/scenarios/prologue.json`
 - `src/ai_pnp/content/quests/prologue_quests.json`
 - `src/ai_pnp/content/npcs/prologue_npcs.json`
@@ -64,3 +67,4 @@
 - No broad secret review or full repository scan was performed during this audit.
 - `docs/module-maps/` was not refreshed in this session and may lag behind the active engine path.
 - The live Ollama integration is implemented, but the latest validation run only verified the fallback path because the local Ollama service was unreachable from this environment.
+- The desktop prototype is functional, but narrator calls still run synchronously on the UI thread.

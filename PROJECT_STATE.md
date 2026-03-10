@@ -11,9 +11,13 @@
 - The current working branch is `dev`.
 - The working tree was clean before this session started.
 - A Python package scaffold exists under `src/ai_pnp/`.
-- `main.py` starts the CLI application through `ai_pnp.core.application`.
+- `main.py` now starts `Application.run()`.
 - The active runtime path is `main.py` -> `Application` -> `ai_pnp.engine.game_engine.GameEngine`.
-- A CLI loop exists with `save`, `load`, `state`, and `quit` commands.
+- `Application` currently reads `ui_mode` from `src/ai_pnp/data/config/app_config.json`.
+- The default local `ui_mode` is `desktop`.
+- A first `tkinter` desktop prototype now exists under `src/ai_pnp/ui/desktop/`.
+- The desktop prototype exposes story text, free-text action input, player status, active quests, and save/load/new-game controls.
+- The CLI loop still exists with `save`, `load`, `state`, and `quit` commands and remains reachable when `ui_mode` is set to `cli`.
 - A `TurnProcessor` exists and routes raw actions through action interpretation, prompt building, narrator selection, state updates, and autosave.
 - `SceneRepository`, `QuestRepository`, and `NpcRepository` load the first playable mini-flow from JSON content files.
 - The playable scenario currently covers four scenes: `roadside_inn_intro`, `inn_common_room`, `inn_front`, and `roadside_clue`.
@@ -24,11 +28,13 @@
   - long-term memory in facts, discovered information, discovered locations, quest progress, and NPC memory
   - generated session summaries after every 10 turns
 - JSON-based save and load support exists through `SaveRepository`.
+- `GameEngine` now exposes UI-oriented methods for player status, quests, current scene, last narration, recent log, save/load, and turn processing.
 - `pyproject.toml` exists with a basic setuptools package definition for Python 3.11+.
-- `tests/test_engine_smoke.py` exists and currently covers log capping, quest progress, NPC memory, session summaries, save/load, and scene-memory updates.
+- `tests/test_engine_smoke.py` exists and currently covers log capping, quest progress, NPC memory, session summaries, save/load, scene-memory updates, and UI-friendly engine API behavior.
 - `docs/module-maps/` exists with initial module notes.
 - Additional parallel folders exist under `src/ai/`, `src/engine/`, `src/ui/`, and `src/data/`. Their role relative to `src/ai_pnp/` is not yet fully documented.
-- In the latest local validation run, the CLI worked and the Ollama fallback path was exercised because the local Ollama service was not reachable from this environment.
+- In the latest local validation run, engine initialization, turn processing, save/load, `tkinter` window creation, and `MainWindow` startup all worked.
+- In the latest local validation run, the Ollama fallback path was exercised because the local Ollama service was not reachable from this environment.
 
 ## Major areas or modules
 - `src/ai_pnp/core/`: application bootstrap plus core models for character, quest, world, and game state.
@@ -51,18 +57,22 @@
 - Ollama integration was added behind `NarratorClient`, with safe fallback when the local service or model is unavailable.
 - Save/load, discovery flags, and quest progress are now covered by small automated tests.
 - Memory layers, NPC memory, session summaries, and stronger quest-state tracking are now wired into the active runtime and save system.
+- The engine API was stabilized for UI consumption, including `get_last_narration()`, `get_recent_log()`, and dict-based save/load/action responses.
+- The placeholder desktop module was replaced with a functional `tkinter` prototype wired directly to the engine.
+- Local verification was expanded to cover engine startup, turn processing, save/load, serializability, and desktop-window startup.
 
 ## Known issues
 - The repository contains parallel structure candidates outside `src/ai_pnp/`, which creates ambiguity about the canonical architecture.
 - Persistence is currently JSON based, while the documented MVP target says SQLite.
 - The live Ollama path is implemented, but an actual model response was not verifiable in this session because the local Ollama service was not reachable from the execution environment.
-- No real desktop or web UI exists yet.
+- The current desktop UI runs on the main thread; a slow LLM response can block the window until the request returns.
 - No linter or dedicated build command was discoverable in the minimal inspected slice.
 - Older placeholder modules such as `content_loader.py`, `memory_service.py`, and `rules_engine.py` still exist locally but are not in the active runtime path.
 
 ## Current focus
 - Stabilize the canonical project structure around the new engine path.
 - Verify the live Ollama path on a machine where the local service and model are available.
+- Harden the desktop prototype without leaking game logic into the UI layer.
 - Deepen deterministic quest, memory, and campaign progression beyond the first mini-flow.
 - Keep documentation aligned with verified local state.
 
