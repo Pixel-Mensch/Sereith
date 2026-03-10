@@ -1,0 +1,19 @@
+{
+  "ancestries": [
+    {
+      "ancestry_id": "mensch",
+      "name": "Mensch",
+      "summary": "Weit verbreitet, anpassungsfaehig und tief in lokale Bindungen, Eide und alltagspraktische Magie verstrickt."
+    },
+    {
+      "ancestry_id": "fahlgeboren",
+      "name": "Fahlgeboren",
+      "summary": "Menschennahe Linien, deren Familien Nachhall, Weisssaum oder alte Ankerreste ueber Generationen hinweg mitgetragen haben."
+    },
+    {
+      "ancestry_id": "nahtkind",
+      "name": "Nahtkind",
+      "summary": "Seltene Linien, die durch gebundene Heilung, Namensuebertragung oder Vertragsrest eine merkliche metaphysische Praegung tragen."
+    }
+  ]
+}

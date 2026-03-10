@@ -1,0 +1,20 @@
+{
+  "overview": "Magie ist in Sereith alltagsnah, aber nie kostenlos. Sie arbeitet ueber Bindung, Preis, Anker und Nachhall.",
+  "pillars": [
+    "Bindung an Namen, Orte, Koerper oder Dinge",
+    "Preis durch Schmerz, Erinnerung, Schuld, Material oder Verpflichtung",
+    "Anker zur Stabilisierung langfristiger Wirkung",
+    "Nachhall als Risiko jeder schlecht gebundenen Veraenderung"
+  ],
+  "common_uses": [
+    "heilende Naehe und gebundene Salben",
+    "registergestuetzte Sicherung von Namen und Rechten",
+    "wegsteingebundene Schutzzeichen",
+    "kleine Herd- und Wettervertraege"
+  ],
+  "warnings": [
+    "Zu saubere Wunder lassen meist etwas verschwinden.",
+    "Macht verschiebt Kosten oft auf andere.",
+    "Nicht jeder Preis wird sofort sichtbar."
+  ]
+}

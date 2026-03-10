@@ -33,6 +33,7 @@
   - desktop launcher in `src/ai_pnp/ui/desktop/app.py`
   - CLI runner in `src/ai_pnp/ui/cli/runner.py`
 - Current persistence path: JSON autosave under `src/ai_pnp/data/saves/`
+- The active content basis is now Sereith starter data under `src/ai_pnp/content/`.
 
 ## Verified modules
 - `src/ai_pnp/core/`: application bootstrap, config loading, and dataclass-based core models.
@@ -42,7 +43,7 @@
 - `src/ai_pnp/ui/cli/`: CLI runner wrapper.
 - `src/ai_pnp/ui/desktop/`: first `tkinter` desktop prototype over the engine API.
   - `MainWindow` now renders story, character state, quests, inventory, visible NPCs, and recent actions.
-- `src/ai_pnp/content/`: JSON-backed world, scenario, NPC, quest, and prompt content.
+- `src/ai_pnp/content/`: JSON-backed Sereith world, region, faction, ancestry, location, quest, NPC, and prompt-lore content.
 - `docs/module-maps/`: short handwritten module summaries.
 
 ## Important flows
@@ -58,6 +59,8 @@
   - a status bar for feedback and error context
 - Current turn flow:
   player text input -> command handling or `TurnProcessor` -> `ActionInterpreter` -> content-backed action lookup -> `PromptBuilder` -> `NarratorClient` -> `StateUpdater` -> `MemoryService` -> `SessionSummaryService` -> autosave
+- Current content flow:
+  `seed_world.json` sets the active region and start scene -> `prologue.json` provides the six-scene Eidenkehr starter route -> quest/NPC repositories load starter questline and NPC bases -> `PromptBuilder` adds narrator rules plus Sereith lore rules
 - Current persistence flow:
   `SaveRepository.save()` and `autosave()` write JSON save data under `src/ai_pnp/data/saves/`
 - Current narrator flow:
@@ -83,7 +86,7 @@
 - `src/ai_pnp/engine/parsing/action_interpreter.py`: classifies raw player actions into coarse intents.
 - `src/ai_pnp/engine/state/state_updater.py`: applies deterministic state changes and turn logging.
 - `src/ai_pnp/services/content/scene_repository.py`: loads scenes, exits, and action effects from JSON.
-- `src/ai_pnp/services/content/quest_repository.py`: loads the initial quest state from JSON.
+- `src/ai_pnp/services/content/quest_repository.py`: loads the starter quest state from JSON.
 - `src/ai_pnp/services/content/npc_repository.py`: loads visible NPC context from JSON.
 - `src/ai_pnp/services/memory/memory_service.py`: owns short-term and long-term memory updates.
 - `src/ai_pnp/services/memory/session_summary_service.py`: creates non-LLM session summaries every 10 turns.
@@ -94,6 +97,10 @@
 - `src/ai_pnp/ui/desktop/app.py`: thin launcher for the desktop app.
 - `src/ai_pnp/ui/desktop/main_window.py`: current `tkinter` desktop window with structured story presentation, status panels, inventory, NPCs, recent actions, and control buttons.
 - `tests/test_engine_smoke.py`: current focused engine, memory, save/load, application-boot, CLI-runner, and desktop-window smoke regression test set.
+- `src/ai_pnp/content/scenarios/prologue.json`: current Sereith starter scenario centered on Eidenkehr, its inn, register house, healing house, and the Weisssaum waystone.
+- `src/ai_pnp/content/quests/starter_questline.json`: current starter questline `Die stillen Register von Eidenkehr`.
+- `src/ai_pnp/content/npcs/starter_npcs.json`: current Eidenkehr NPC roster.
+- `src/ai_pnp/content/prompts/lore_rules.json`: Sereith-specific world principles, themes, and White Ebb signals used by the prompt builder.
 
 ## Principles
 - UI must not own game logic.

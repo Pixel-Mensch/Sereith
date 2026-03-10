@@ -5,7 +5,7 @@ from pathlib import Path
 class NpcRepository:
     def __init__(self) -> None:
         content_root = Path(__file__).resolve().parents[2] / "content"
-        self.npc_path = content_root / "npcs" / "prologue_npcs.json"
+        self.npc_path = content_root / "npcs" / "starter_npcs.json"
         payload = self._load_json(self.npc_path)
         self._npcs = {npc["npc_id"]: npc for npc in payload.get("npcs", [])}
 

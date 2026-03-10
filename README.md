@@ -3,6 +3,7 @@
 Desktop-first AI Pen and Paper project with a persistent game state.
 The LLM is only the narrator.
 The actual rules, state, memory, and persistence live in the application core.
+The first verified content basis is now the Sereith starter region around Eidenkehr on the Valedorn-Seufzerforst border.
 
 ## Current local runtime
 
@@ -27,7 +28,7 @@ The actual rules, state, memory, and persistence live in the application core.
   - `quit`
 - The current scaffold contains:
   - initial character and quest
-  - four scenes for the first mini-flow
+  - a Sereith-backed starter region with six scenes for the first mini-campaign
   - action interpretation with simple subject detection
   - prompt building with scene, NPC, quest, short-term memory, long-term facts, and session summary context
   - Ollama-backed narration with safe fallback
@@ -84,7 +85,7 @@ pytest -q
 - `GameState` remains serializable.
 - `tkinter` window creation works locally.
 - `MainWindow` can be instantiated, refreshed, and driven through an action plus save/load.
-- `12` focused tests currently pass.
+- `13` focused tests currently pass.
 - A root Windows launcher file exists and points at the current desktop start path.
 
 ## Notes
@@ -94,3 +95,4 @@ pytest -q
 - In the latest local validation run, the fallback narrator path was exercised because Ollama was not reachable from the environment.
 - The desktop UI is intentionally thin: game logic stays in `GameEngine`, `TurnProcessor`, and related services.
 - The desktop UI still calls the narrator synchronously on the main thread; slow model responses can still block the window for now.
+- The verified starter questline is `Die stillen Register von Eidenkehr`, built around a missing courier, unstable registers, suspiciously smooth healing, and the first quiet signs of the White Ebb.

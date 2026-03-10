@@ -1,5 +1,7 @@
 {
-  "chapter": "Prolog",
-  "time_of_day": "Abend",
+  "world_name": "Sereith",
+  "region_id": "valedorn_west_border",
+  "chapter": "Kapitel I: Die stillen Register",
+  "time_of_day": "Spaeter Abend",
   "start_scene_id": "roadside_inn_intro"
 }

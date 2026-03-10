@@ -1,12 +1,12 @@
 # SESSION_HANDOFF.md
 
 ## Session summary
-- Verified the current engine, desktop UI, and tests locally before changing the UX layer.
-- Extended `GameEngine` minimally with `get_world_status()`, `get_inventory()`, and `get_visible_npcs()` so the UI can display more state without reading internals directly.
-- Rebuilt `src/ai_pnp/ui/desktop/main_window.py` into a more usable single-window desktop surface with clearer narration hierarchy, status, quests, inventory, visible NPCs, and a recent-action log.
-- Kept UI callbacks thin: they only trigger engine methods, manage widget state, and refresh the view.
-- Added desktop-focused smoke coverage and verified action, save, and load through the window against the local engine.
-- Added `Start_AI-PnP.bat` in the repo root as a Windows launcher for the current desktop start path.
+- Ran a targeted lore audit against the locally inspected starter content, prompt rules, quest data, and NPC data before changing live content.
+- Replaced the generic starter tavern content with Sereith-grounded content for Eidenkehr on the Valedorn-Seufzerforst border.
+- Added Sereith content files for world principles, metaphysics, magic, major threats, themes, regions, factions, ancestries, locations, starter NPCs, starter questline, and lore prompt rules.
+- Reworked the active starter scenario in `src/ai_pnp/content/scenarios/prologue.json` into a six-scene mini-campaign route covering the inn, back room, namesquare, register house, healing house, and the Weisssaum waystone.
+- Pointed `QuestRepository` and `NpcRepository` at the new starter files and extended `PromptBuilder` to merge narrator rules with Sereith lore rules.
+- Added a regression test for the starter route across innkeeper, register house, healing house, and the first White Ebb clue.
 
 ## Current repo state
 - `src/` now contains only `src/ai_pnp/` as the canonical application tree.
@@ -22,19 +22,27 @@
   - visible NPC/interactions
   - recent actions
   - status feedback and save/load/new-game controls
-- Twelve focused tests exist and pass.
+- The active content basis is now Sereith rather than the earlier generic fantasy placeholder content.
+- The locally verified starter region is Eidenkehr, a small border settlement with:
+  - the inn `Der Hinterlegte Krug`
+  - the namesquare
+  - the register house `Haus der Zweiten Schrift`
+  - the healing house `Haus der Ruhigen Naht`
+  - the Weisssaum waystone on the Seufzerforst path
+- The locally verified starter questline is `Die stillen Register von Eidenkehr`.
+- Thirteen focused tests exist and pass.
 - Current persistence is JSON save/load, not SQLite yet.
 - `main` is the stable branch and `dev` is the current working branch.
 
 ## Validation
 - `pytest -q`
-- scripted desktop check covering `MainWindow` startup, one player action, save, and load
+- scripted engine flow covering innkeeper -> register house -> healing house -> Weisssaum clue route
 - No build or linter command was discoverable in the minimal inspected slice.
 
 ## Recommended next action
-1. Verify the desktop and CLI narrator path with a running local Ollama service and the configured model.
-2. Move narrator requests off the desktop UI thread so the window stays responsive during slow responses.
-3. Decide how much long-term campaign context the desktop UI should expose next, for example session summaries, facts, or richer NPC memory panels.
+1. Verify the desktop and CLI narrator path with a running local Ollama service and the configured model against the new Sereith prompt rules.
+2. Extend the Eidenkehr questline beyond the first hard clue, especially the return path from Weisssaum into register, healing, and faction consequences.
+3. Move narrator requests off the desktop UI thread so the window stays responsive during slow responses.
 
 ## Relevant files
 - `AGENTS.md`
@@ -62,10 +70,20 @@
 - `src/ai_pnp/ui/desktop/app.py`
 - `src/ai_pnp/ui/desktop/main_window.py`
 - `src/ai_pnp/content/scenarios/prologue.json`
-- `src/ai_pnp/content/quests/prologue_quests.json`
-- `src/ai_pnp/content/npcs/prologue_npcs.json`
+- `src/ai_pnp/content/quests/starter_questline.json`
+- `src/ai_pnp/content/npcs/starter_npcs.json`
 - `src/ai_pnp/content/prompts/narrator_rules.json`
+- `src/ai_pnp/content/prompts/lore_rules.json`
 - `src/ai_pnp/content/world/seed_world.json`
+- `src/ai_pnp/content/world/world_overview.json`
+- `src/ai_pnp/content/world/metaphysics.json`
+- `src/ai_pnp/content/world/magic_system.json`
+- `src/ai_pnp/content/world/major_threats.json`
+- `src/ai_pnp/content/world/themes.json`
+- `src/ai_pnp/content/regions/`
+- `src/ai_pnp/content/factions/major_factions.json`
+- `src/ai_pnp/content/peoples/ancestries.json`
+- `src/ai_pnp/content/locations/starter_region_locations.json`
 - `tests/test_engine_smoke.py`
 - `docs/module-maps/`
 
@@ -76,3 +94,4 @@
 - The live Ollama integration is implemented, but the latest validation run only verified the fallback path because the local Ollama service was unreachable from this environment.
 - The desktop UI is now more usable, but narrator calls still run synchronously on the UI thread.
 - Inventory interaction, richer NPC drill-downs, and session-summary panels are still not implemented.
+- The Sereith lore integration in this session focused on the starter region and the first mini-campaign only; broader regional and faction content is still background data, not active gameplay.

@@ -1,0 +1,22 @@
+{
+  "world_name": "Sereith",
+  "core_principles": [
+    "Nichts wird aus dem Nichts geformt.",
+    "Jede Wirkung verlangt einen Preis.",
+    "Dauer braucht Anker.",
+    "Nachhall verdirbt die Wirklichkeit.",
+    "Namen und Beziehungen sind real."
+  ],
+  "narrative_themes": [
+    "Zeige Preis, Bindung und soziale Kosten statt kostenloser Wunder.",
+    "Lass Erinnerung, Register und Namen spuerbar real wirken.",
+    "Halte Moral mehrdeutig und vermeide einfache Heldengewissheit.",
+    "Betone Wuerde, Auszehrung, Ordnung gegen Freiheit und drohenden Verlust von Unterschied."
+  ],
+  "white_ebb_signals": [
+    "zu glatte Heilung",
+    "falsch oder gleichfoermig erinnerte Details",
+    "verblasste Namen oder Register",
+    "gedaempfte Unterschiede und unnatuerliche Stille"
+  ]
+}

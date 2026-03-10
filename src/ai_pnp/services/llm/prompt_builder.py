@@ -5,9 +5,13 @@ from pathlib import Path
 class PromptBuilder:
     def __init__(self, npc_repository) -> None:
         self.npc_repository = npc_repository
-        prompt_path = Path(__file__).resolve().parents[2] / "content" / "prompts" / "narrator_rules.json"
+        content_root = Path(__file__).resolve().parents[2] / "content" / "prompts"
+        prompt_path = content_root / "narrator_rules.json"
+        lore_path = content_root / "lore_rules.json"
         with prompt_path.open("r", encoding="utf-8") as handle:
             self.prompt_rules = json.load(handle)
+        with lore_path.open("r", encoding="utf-8") as handle:
+            self.lore_rules = json.load(handle)
 
     def build(
         self,
@@ -40,6 +44,9 @@ class PromptBuilder:
         exits = ", ".join(exit_rule["label"] for exit_rule in scene.get("exits", [])) or "keine"
         style_rules = "\n".join(f"- {item}" for item in self.prompt_rules.get("style", []))
         constraints = "\n".join(f"- {item}" for item in self.prompt_rules.get("constraints", []))
+        world_principles = "\n".join(f"- {item}" for item in self.lore_rules.get("core_principles", []))
+        theme_lines = "\n".join(f"- {item}" for item in self.lore_rules.get("narrative_themes", []))
+        threat_signals = ", ".join(self.lore_rules.get("white_ebb_signals", [])[:4]) or "keine"
         action_hint = planned_effect.get("prompt_hint", "Keine besondere Zusatzlenkung.")
         target_hint = (
             f"Moegliches naechstes Ziel: {target_scene['title']} ({target_scene['description']})"
@@ -51,6 +58,9 @@ class PromptBuilder:
             f"Rolle:\n{self.prompt_rules['role']}\n\n"
             f"Leitplanken:\n{constraints}\n\n"
             f"Stil:\n{style_rules}\n\n"
+            f"Weltlogik Sereith:\n{world_principles}\n\n"
+            f"Themen und Ton:\n{theme_lines}\n\n"
+            f"Warnzeichen der Weissen Ebbe: {threat_signals}\n\n"
             f"Aktuelle Szene:\n"
             f"- ID: {scene['scene_id']}\n"
             f"- Titel: {scene['title']}\n"

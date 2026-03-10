@@ -30,7 +30,10 @@
 - The CLI still supports `save`, `load`, `state`, and `quit` and remains reachable when `ui_mode` is set to `cli` or via `scripts/run_cli.py`.
 - A `TurnProcessor` exists and routes raw actions through action interpretation, prompt building, narrator selection, state updates, and autosave.
 - `SceneRepository`, `QuestRepository`, and `NpcRepository` load the first playable mini-flow from JSON content files.
-- The playable scenario currently covers four scenes: `roadside_inn_intro`, `inn_common_room`, `inn_front`, and `roadside_clue`.
+- The playable scenario now uses Sereith starter content centered on Eidenkehr at the Valedorn-Seufzerforst border.
+- The locally verified starter scenario currently covers six scenes: `roadside_inn_intro`, `inn_common_room`, `inn_front`, `register_house`, `hospice`, and `roadside_clue`.
+- The current starter questline is `Die stillen Register von Eidenkehr` with the active quest `Der verschwundene Kurier`.
+- `src/ai_pnp/content/` now includes world, region, faction, ancestry, location, quest, NPC, and prompt-lore JSON for the Sereith starter region.
 - The narrator facade now supports an Ollama-backed path plus a safe local fallback path.
 - A multi-layer memory system now exists:
   - scene memory in `WorldState`
@@ -60,8 +63,10 @@
 - Import-path bootstrap added so the current `src` layout works for local runs and tests.
 - Control-file audit refreshed the documented repo state against the currently verified local files.
 - Engine-first runtime scaffold added under `src/ai_pnp/engine/`.
-- The starter world now has two JSON-backed scenes, a first turn pipeline, and JSON save/load support.
-- The first playable mini-flow now spans the inn, its common room, the front yard, and a first clue site.
+- The starter world now has JSON-backed scenes, a first turn pipeline, and JSON save/load support.
+- A lore audit was completed against the locally inspected starter content.
+- Generic starter tavern content was replaced with Sereith-grounded content for Eidenkehr, its register house, healing house, and the White-Ebb-marked waystone at the Weisssaum.
+- The first playable mini-campaign now spans the inn, its back room, the namesquare, the register house, the healing house, and the first clue site at the border path.
 - Ollama integration was added behind `NarratorClient`, with safe fallback when the local service or model is unavailable.
 - Save/load, discovery flags, and quest progress are now covered by small automated tests.
 - Memory layers, NPC memory, session summaries, and stronger quest-state tracking are now wired into the active runtime and save system.
@@ -73,8 +78,9 @@
 - The CLI loop and command parsing were moved out of `GameEngine` into `src/ai_pnp/ui/cli/runner.py`.
 - The desktop UI was upgraded from a bare prototype to a more usable play surface with clearer narration hierarchy, inventory, NPC/interactions, and recent-action panels.
 - The engine was extended minimally for UI display with `get_world_status()`, `get_inventory()`, and `get_visible_npcs()`.
-- Desktop-adjacent smoke coverage was added and the current local suite now passes with `12` tests.
+- Desktop-adjacent smoke coverage was added and the current local suite now passes with `13` tests.
 - A root Windows launcher file was added so the project can be started by double-click without typing the Python command manually.
+- The Sereith starter content now carries explicit world principles around price, anchoring, memory, afterecho, and the White Ebb through scene data and prompt-lore rules.
 
 ## Known issues
 - Persistence is currently JSON based, while the documented MVP target says SQLite.
@@ -83,11 +89,12 @@
 - No linter or dedicated build command was discoverable in the minimal inspected slice.
 - Some internal placeholder modules such as `src/ai_pnp/services/content/content_loader.py` and `src/ai_pnp/services/rules/rules_engine.py` still exist locally but are not in the active runtime path.
 - The desktop UI is still a single-window prototype; advanced navigation, inventory actions, and richer NPC drill-downs are not implemented yet.
+- The Sereith content integration currently covers only the starter region and one mini-campaign; broader regional content and downstream quest branches are still absent.
 
 ## Current focus
 - Verify the live Ollama path on a machine where the local service and model are available.
+- Deepen the Sereith starter campaign beyond the first clue and register-healing triangle.
 - Harden the desktop prototype further without leaking game logic into the UI layer.
-- Deepen deterministic quest, memory, and campaign progression beyond the first mini-flow.
 - Keep documentation aligned with verified local state.
 
 ## Risks and uncertainties
@@ -95,3 +102,4 @@
 - Legal direction is documented, but no content review beyond the inspected starter files was performed.
 - No broad secret audit was performed beyond the minimal inspected file set.
 - `docs/module-maps/` was not refreshed in this session and may lag behind the new engine path.
+- The Sereith lore baseline in this repo is only verified through the newly added starter content files and prompt rules; no wider setting bible was present in the inspected slice.

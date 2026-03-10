@@ -1,0 +1,20 @@
+{
+  "major_threats": [
+    {
+      "threat_id": "white_ebb",
+      "name": "Die Weisse Ebbe",
+      "summary": "Eine metaphysische Tendenz zur stillen Vereinheitlichung, zum Verlust von Unterschied, Erinnerung, Widerspruch und Lebendigkeit.",
+      "signs": [
+        "Erinnerungen werden glatt und austauschbar.",
+        "Namen, Register oder Markierungen verlieren Eigenheit.",
+        "Wunden oder Konflikte verschwinden zu sauber.",
+        "Echo, Farbe und Widerspruch wirken gedimmt."
+      ]
+    },
+    {
+      "threat_id": "unbound_afterecho",
+      "name": "Ungebundener Nachhall",
+      "summary": "Zurueckgelassene Wirkungen aus Magie, Eiden oder Gewalt verformen Orte, Gespraeche und Wahrnehmung."
+    }
+  ]
+}

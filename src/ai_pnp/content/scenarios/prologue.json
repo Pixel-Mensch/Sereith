@@ -2,55 +2,70 @@
   "scenes": [
     {
       "scene_id": "roadside_inn_intro",
-      "title": "Gasthaus am Heerweg",
-      "location_name": "Eingang des Gasthauses",
-      "description": "Du trittst in ein niedriges Gasthaus am Rand der alten Heerstrasse. Nasse Maentel dampfen an Holzhaken, die Luft riecht nach Suppe und Regen, und zwischen einer nervoesen Wirtin und drei schweigsamen Fremden haengt ein Geruecht, das keiner laut aussprechen will.",
-      "npcs": ["innkeeper", "stranger_hunter", "stranger_scribe", "stranger_guard"],
-      "scene_objects": ["theke", "feuerstelle", "nasse maentel", "schwere eingangstuer"],
+      "title": "Der Hinterlegte Krug",
+      "location_name": "Schankraum von Eidenkehr",
+      "description": "Unter verrussten Balken und zwischen nassen Namensbaendern sammelt der Hinterlegte Krug die offenen Kosten des Grenzortes. Selda Nereth schenkt mit zu ruhiger Hand aus, waehrend ein Vermesser, eine Wandersaengerin und ein Grenzlaeufer ueber einen verschwundenen Kurier sprechen, als duerfte selbst das Geruecht nicht zu laut werden.",
+      "npcs": ["innkeeper", "surveyor", "pilgrim", "ranger"],
+      "scene_objects": ["salzofen", "anschlagbrett", "nasse namensbaender", "verknoteter registerfaden"],
       "exits": [
         {
-          "label": "tiefer in den Schankraum",
+          "label": "ins Hinterzimmer",
           "target_scene_id": "inn_common_room",
-          "keywords": ["schankraum", "gastraum", "theke", "hinein", "innen"]
+          "keywords": ["hinterzimmer", "hinten", "innen", "stube"]
         },
         {
-          "label": "vor das Gasthaus",
+          "label": "auf den Namenhof",
           "target_scene_id": "inn_front",
-          "keywords": ["raus", "hinaus", "vor", "vor die tuer", "hof", "gasthaus"]
+          "keywords": ["raus", "hinaus", "hof", "namenhof", "vor", "tuer"]
+        },
+        {
+          "label": "zum Registerhaus",
+          "target_scene_id": "register_house",
+          "keywords": ["register", "registerhaus", "schreiberhaus", "verwaltung", "schrift"]
+        },
+        {
+          "label": "zum Heilhaus",
+          "target_scene_id": "hospice",
+          "keywords": ["heilhaus", "hospiz", "naht", "heilerin"]
+        },
+        {
+          "label": "zum Wegstein",
+          "target_scene_id": "roadside_clue",
+          "keywords": ["spur", "wegstein", "pfad", "wald", "weisssaum", "seufzerforst"]
         }
       ],
       "action_effects": {
         "observe": {
           "default": {
-            "discovered_flags": ["noticed_inn_tension"],
-            "discovered_information": ["Die Stimmung im Gasthaus ist angespannt."],
-            "facts": ["strangers_are_suspicious"],
-            "temporary_scene_flags": ["room_scanned"],
-            "status_message": "Du praegst dir die gespannte Stimmung im Gasthaus ein.",
-            "prompt_hint": "Zeige die nervoese Wirtin, die drei Fremden und die spuerbare Spannung im Raum.",
-            "fallback_narration": "Zwischen klappernden Bechern und geduckten Stimmen wird deutlich, dass hier mehr als nur Regenwetter auf den Herzen liegt."
+            "discovered_flags": ["noticed_settlement_tension"],
+            "discovered_information": ["Im Krug spricht man leiser als fuer blossen Regen noetig waere."],
+            "facts": ["eidenkehr_holds_its_breath"],
+            "temporary_scene_flags": ["inn_scanned"],
+            "status_message": "Du praegst dir die gespannte Ordnung des Krugs ein.",
+            "prompt_hint": "Zeige den Krug als Ort von Gestandnissen, Schulden und gebremsten Stimmen.",
+            "fallback_narration": "Jeder Becher wird sorgfaeltiger abgesetzt, als waere selbst der Tisch ein Zeuge, den man nicht aufschrecken darf."
           },
           "strangers": {
             "discovered_flags": ["observed_strangers"],
-            "discovered_information": ["Die drei Fremden wirken angespannt und aufmerksam."],
+            "discovered_information": ["Der Vermesser, die Saengerin und der Grenzlaeufer teilen dieselbe Unruhe, aber nicht dieselbe Erinnerung."],
             "facts": ["strangers_are_suspicious"],
             "quest_updates": [
               {
                 "quest_id": "missing_courier",
                 "progress_flags": ["observed_strangers"],
-                "summary_append": "Die drei Fremden beobachten den Eingang, als warteten sie auf schlechte Nachrichten."
+                "summary_append": "Die Reisenden im Krug erinnern sich uneins an die letzten Stunden des Kuriers."
               }
             ],
-            "status_message": "Du musterest die drei Fremden genauer.",
-            "prompt_hint": "Beschreibe die Fremden als auffaellig aufmerksam und nicht ganz entspannt.",
-            "fallback_narration": "Einer der Fremden trommelt mit zwei Fingern auf den Tisch, waehrend ein anderer immer wieder zum Eingang sieht."
+            "status_message": "Du beobachtest die Reisenden genauer.",
+            "prompt_hint": "Die Fremden sollen nach Menschen klingen, die dieselbe Geschichte in verschiedenen Fassungen tragen.",
+            "fallback_narration": "Der Vermesser streicht ueber einen Ruessaum an seinem Aermel, waehrend die Saengerin den Namen des Kuriers fast summt, als muesse sie ihn vor dem Verblassen schuetzen."
           }
         },
         "talk": {
           "innkeeper": {
             "discovered_flags": ["questioned_innkeeper", "heard_about_courier", "courier_last_seen_outside"],
-            "discovered_information": ["Die Wirtin hat den Kurier zuletzt draussen vor dem Gasthaus gesehen."],
-            "facts": ["courier_last_seen_at_inn"],
+            "discovered_information": ["Selda bestaetigt, dass der Kurier mit Registerblaettern zum Wegstein hinausging und die Registerhueterin spaeter eine unstimmige Zeile fand."],
+            "facts": ["courier_last_seen_at_inn", "register_memory_mismatch"],
             "npc_memory": {
               "npc_id": "innkeeper",
               "last_topic": "courier",
@@ -60,18 +75,18 @@
               {
                 "quest_id": "missing_courier",
                 "progress_flags": ["heard_about_courier", "asked_innkeeper"],
-                "objectives": ["investigate_roadside", "report_back_to_inn"],
-                "summary_append": "Die Wirtin berichtet, dass der verschwundene Kurier zuletzt draussen vor dem Gasthaus gesehen wurde."
+                "objectives": ["check_register_discrepancy", "follow_roadside_clue"],
+                "summary_append": "Selda Nereth berichtet, dass der Kurier mit Registergut zum Wegstein hinausging und kurz darauf eine Registerzeile nicht mehr zu den Erinnerungen im Ort passte."
               }
             ],
-            "status_message": "Die Wirtin berichtet dir nervoes vom verschwundenen Kurier.",
-            "prompt_hint": "Die Wirtin soll bestaetigen, dass der Kurier zuletzt draussen vor dem Gasthaus gesehen wurde.",
-            "fallback_narration": "Mit gesenkter Stimme erklaert die Wirtin, der Kurier sei zuletzt draussen an der Strasse gesehen worden, kurz bevor der Regen richtig einsetzte."
+            "status_message": "Selda schildert dir den letzten bekannten Weg des Kuriers.",
+            "prompt_hint": "Die Wirtin soll den verschwundenen Kurier, das Registergut und die erste Unstimmigkeit ehrlich, aber vorsichtig benennen.",
+            "fallback_narration": "Selda senkt die Stimme und sagt, der Kurier habe den Krug mit einer versiegelten Registermappe verlassen. Spaeter habe Maren Ild geschworen, eine Zeile im Register passe ploetzlich nicht mehr zu dem, woran sich alle erinnern sollten."
           },
           "courier": {
             "discovered_flags": ["questioned_innkeeper", "heard_about_courier", "courier_last_seen_outside"],
-            "discovered_information": ["Die Wirtin verbindet den verschwundenen Kurier mit dem Vorplatz."],
-            "facts": ["courier_last_seen_at_inn"],
+            "discovered_information": ["Selda verbindet das Verschwinden des Kuriers mit dem Wegstein und einem fehlerhaften Registereintrag."],
+            "facts": ["courier_last_seen_at_inn", "register_memory_mismatch"],
             "npc_memory": {
               "npc_id": "innkeeper",
               "last_topic": "courier",
@@ -81,215 +96,383 @@
               {
                 "quest_id": "missing_courier",
                 "progress_flags": ["heard_about_courier", "asked_innkeeper"],
-                "objectives": ["investigate_roadside", "report_back_to_inn"],
-                "summary_append": "Die Wirtin berichtet, dass der verschwundene Kurier zuletzt draussen vor dem Gasthaus gesehen wurde."
+                "objectives": ["check_register_discrepancy", "follow_roadside_clue"],
+                "summary_append": "Der Kurier verschwand nach seinem Aufbruch mit Registergut Richtung Wegstein, und das Ortsregister traegt seitdem eine unstimmige Stelle."
               }
             ],
-            "status_message": "Beim Thema Kurier rueckt die Wirtin endlich mit Informationen heraus.",
-            "prompt_hint": "Das Gespraech ueber den Kurier soll die Spur nach draussen lenken.",
-            "fallback_narration": "Auf deine Frage hin presst die Wirtin die Lippen zusammen und deutet schliesslich zur Tuer: Draussen sei der Kurier zuletzt gesehen worden."
+            "status_message": "Beim Thema Kurier rueckt Selda mit mehr heraus, als ihr lieb ist.",
+            "prompt_hint": "Lenke das Gespraech vom Geruecht zum Register und zum Wegstein am Ortsrand.",
+            "fallback_narration": "Auf das Wort 'Kurier' hin verhaertet sich Seldas Gesicht. Sie gibt zu, dass er noch am Abend zum Wegstein hinausging, mit Mappe und Siegel, und dass seither eine Registerzeile klingt, als habe jemand ihr die Reibung genommen."
           }
         }
       }
     },
     {
       "scene_id": "inn_common_room",
-      "title": "Schankraum",
-      "location_name": "Schankraum des Gasthauses",
-      "description": "Zwischen den Tischen des Schankraums knistert das Feuer im Kamin. Die Wirtin hat die Theke fest im Blick, waehrend die drei Fremden ihre Becher zu langsam heben, um wirklich entspannt zu wirken.",
-      "npcs": ["innkeeper", "stranger_hunter", "stranger_scribe", "stranger_guard"],
-      "scene_objects": ["kamin", "tische", "theke", "becher"],
+      "title": "Hinterzimmer des Krugs",
+      "location_name": "Hinterzimmer des Hinterlegten Krugs",
+      "description": "Im Hinterzimmer haengen Rechnungsfetzen, ein halb verbranntes Liedblatt und der Geruch von nassem Leder in derselben Luft. Hier reden die Reisenden offener, aber nie so offen, dass eine Version der Nacht die andere ganz verdrangt.",
+      "npcs": ["surveyor", "pilgrim", "ranger"],
+      "scene_objects": ["liedblatt", "rechnungsfetzen", "leerer schreibtisch", "tropfender mantel"],
       "exits": [
         {
-          "label": "zum Eingang",
+          "label": "zurueck in den Schankraum",
           "target_scene_id": "roadside_inn_intro",
-          "keywords": ["eingang", "vorne", "tuer"]
+          "keywords": ["zurueck", "vorne", "schankraum", "krug"]
         },
         {
-          "label": "vor das Gasthaus",
+          "label": "auf den Namenhof",
           "target_scene_id": "inn_front",
-          "keywords": ["raus", "hinaus", "vor", "hof", "gasthaus"]
+          "keywords": ["hof", "hinaus", "raus", "namenhof"]
+        },
+        {
+          "label": "zum Registerhaus",
+          "target_scene_id": "register_house",
+          "keywords": ["register", "registerhaus", "schreiberhaus", "verwaltung", "schrift"]
+        },
+        {
+          "label": "zum Heilhaus",
+          "target_scene_id": "hospice",
+          "keywords": ["heilhaus", "hospiz", "naht", "heilerin"]
+        },
+        {
+          "label": "zum Wegstein",
+          "target_scene_id": "roadside_clue",
+          "keywords": ["spur", "wegstein", "pfad", "wald", "weisssaum", "seufzerforst"]
         }
       ],
       "action_effects": {
         "observe": {
           "default": {
             "discovered_flags": ["observed_common_room"],
-            "discovered_information": ["Im Schankraum wartet jeder auf Neuigkeiten."],
-            "temporary_scene_flags": ["common_room_scanned"],
-            "status_message": "Du nimmst die Wirtin, das Feuer und die Fremden genauer wahr.",
-            "prompt_hint": "Halte die Wirtin nervoes und die Fremden wachsam.",
-            "fallback_narration": "Das Kaminlicht gibt der Stube Waerme, aber nicht Ruhe; jeder Blick scheint zu lang auf der Tuer zu liegen."
-          },
-          "strangers": {
-            "discovered_flags": ["observed_strangers"],
-            "discovered_information": ["Die Fremden tauschen unruhige Blicke."],
-            "facts": ["strangers_are_suspicious"],
-            "quest_updates": [
-              {
-                "quest_id": "missing_courier",
-                "progress_flags": ["observed_strangers"],
-                "summary_append": "Die Fremden tauschen unruhige Blicke und scheinen mehr ueber den Abend zu wissen, als sie sagen."
-              }
-            ],
-            "status_message": "Du fixierst die Fremden und notierst dir ihre Reaktionen.",
-            "prompt_hint": "Die Fremden sollen nervoes wirken und immer wieder zur Tuer oder zum Fenster schauen.",
-            "fallback_narration": "Als dein Blick auf ihnen ruht, verstummt ihr leises Tuscheln fuers erste; der breiteste von ihnen streicht unwillkuerlich ueber eine nasse Lederfalte an seinem Mantel."
+            "discovered_information": ["Rechnungen und Liedreste widersprechen sich in Details, als seien mehrere Fassungen desselben Abends uebrig geblieben."],
+            "temporary_scene_flags": ["backroom_scanned"],
+            "status_message": "Du sammelst die Widersprueche des Hinterzimmers ein.",
+            "prompt_hint": "Lass das Hinterzimmer nach Nachhall, abgebrochenen Abmachungen und halb geretteter Erinnerung riechen.",
+            "fallback_narration": "An einem Nagel haengt ein Liedblatt, auf dem derselbe Name zweimal in leicht anderer Hand nachgezogen wurde."
           }
         },
         "talk": {
-          "innkeeper": {
-            "discovered_flags": ["questioned_innkeeper", "heard_about_courier", "courier_last_seen_outside"],
-            "discovered_information": ["Die Wirtin bestaetigt den letzten Sichtkontakt vor dem Haus."],
-            "facts": ["courier_last_seen_at_inn"],
-            "npc_memory": {
-              "npc_id": "innkeeper",
-              "last_topic": "courier",
-              "relationship_delta": 1
-            },
+          "default": {
+            "discovered_flags": ["heard_register_rumor"],
+            "discovered_information": ["Die Reisenden sind sich nur in einem Punkt einig: Das Register des Ortes traegt seit dem Abend des Kuriers eine glatte Luecke."],
+            "facts": ["register_memory_mismatch"],
             "quest_updates": [
               {
                 "quest_id": "missing_courier",
-                "progress_flags": ["heard_about_courier", "asked_innkeeper"],
-                "objectives": ["investigate_roadside", "report_back_to_inn"],
-                "summary_append": "Die Wirtin berichtet, dass der verschwundene Kurier zuletzt draussen vor dem Gasthaus gesehen wurde."
+                "progress_flags": ["heard_register_rumor"],
+                "summary_append": "Im Hinterzimmer verdichten die Reisenden das Geruecht, dass das Ortsregister seit dem Verschwinden des Kuriers eine zu glatte Luecke traegt."
               }
             ],
-            "status_message": "Die Wirtin spricht endlich offen ueber den Kurier.",
-            "prompt_hint": "Die Wirtin soll bestaetigen, dass der Kurier draussen vor dem Gasthaus verschwand.",
-            "fallback_narration": "Die Wirtin beugt sich vor und gesteht, dass der Kurier nur wenige Schritte vor dem Gasthaus vom Regen verschluckt wurde und nie zurueckkam."
-          },
-          "strangers": {
-            "discovered_flags": ["heard_stranger_rumor"],
-            "discovered_information": ["Einer der Fremden deutet Spuren draussen an."],
-            "facts": ["strangers_are_suspicious"],
-            "status_message": "Ein Fremder laesst eine unklare Bemerkung ueber Spuren draussen fallen.",
-            "prompt_hint": "Die Fremden sollen andeuten, dass vor der Tuer etwas im Schlamm zurueckblieb.",
-            "fallback_narration": "Nach einem zoegernden Austausch murmelt einer der Fremden, draussen vor dem Haus haetten selbst im Regen noch seltsame Spuren gelegen."
+            "status_message": "Die Reisenden teilen nur eine einzige sichere Sorge mit dir.",
+            "prompt_hint": "Die Reisenden sollen unterschiedlich erinnern, aber dieselbe Luecke fuerchten.",
+            "fallback_narration": "Der Vermesser spricht von einem Wegstein, die Saengerin von einem verlorenen Namen, der Grenzlaeufer nur von einer Stelle im Register, an der etwas zu sauber nicht mehr wehtut."
           },
           "courier": {
-            "discovered_flags": ["heard_about_courier"],
-            "discovered_information": ["Die Erwaehnung des Kuriers verspannt den ganzen Raum."],
+            "discovered_flags": ["heard_register_rumor"],
+            "discovered_information": ["Die Reisenden erinnern den Kurier unterschiedlich, aber alle stoeren sich an derselben fehlenden Schwere in der Geschichte."],
+            "facts": ["register_memory_mismatch"],
             "quest_updates": [
               {
                 "quest_id": "missing_courier",
-                "progress_flags": ["heard_about_courier"],
-                "summary_append": "Sobald der Kurier erwaehnt wird, kippt die Stimmung im Raum merklich."
+                "progress_flags": ["heard_register_rumor"],
+                "summary_append": "Wer vom Kurier spricht, endet bei derselben glatten Luecke im Register."
               }
             ],
-            "status_message": "Das Wort 'Kurier' laesst die Stimmung im Schankraum kippen.",
-            "prompt_hint": "Die Erwaehnung des Kuriers soll den ganzen Raum anspannen.",
-            "fallback_narration": "Das Wort 'Kurier' legt sich wie ein kalter Zug ueber die Tische; selbst das Knistern des Feuers wirkt ploetzlich zu laut."
+            "status_message": "Die Rede vom Kurier fuehrt direkt zu den falschen Erinnerungen.",
+            "prompt_hint": "Zeige, dass niemand dieselben Bilder erinnert, aber alle dasselbe Fehlen spueren.",
+            "fallback_narration": "Als der Kurier erwaehnt wird, beschreibt jeder Reisende einen anderen Mantel, einen anderen Blick, einen anderen Satz. Nur die Stille nach dem Namen klingt bei allen gleich."
           }
         }
       }
     },
     {
       "scene_id": "inn_front",
-      "title": "Vor dem Gasthaus",
-      "location_name": "Vor dem Gasthaus",
-      "description": "Vor dem Gasthaus knirscht nasser Kies unter deinen Stiefeln. Eine schiefe Laterne wirft warmes Licht auf den Hof, und zwischen Wasserpfuetzen zieht sich eine dunkle Spur am Rand der Heerstrasse entlang.",
+      "title": "Namenhof von Eidenkehr",
+      "location_name": "Vor dem Hinterlegten Krug",
+      "description": "Vor dem Krug spannt sich der kleine Namenhof zwischen Registerhaus, Heilhaus und einem schlichten Namenstein auf. Eine schiefe Laterne malt warmes Licht ueber nassen Kies, doch am Rand des Platzes zieht bereits eine zu glatte Spur Richtung Wegstein und Seufzerforst.",
       "npcs": [],
-      "scene_objects": ["laterne", "nasser kies", "wasserpfuetzen", "dunkle spur"],
+      "scene_objects": ["laterne", "namenstein", "registerhaus", "heilhaus", "nasser marktweg"],
       "enter_effect": {
         "discovered_flags": ["went_outside"],
-        "discovered_information": ["Vor dem Gasthaus fuehrt eine dunkle Spur in den Schlamm."],
-        "status_message": "Du trittst hinaus vor das Gasthaus."
+        "discovered_information": ["Auf dem Namenhof liegen Registerhaus, Heilhaus und der Weg zum alten Wegstein offen vor dir."],
+        "status_message": "Du trittst hinaus auf den Namenhof."
       },
       "exits": [
         {
-          "label": "zurueck in den Schankraum",
+          "label": "zurueck in den Krug",
           "target_scene_id": "inn_common_room",
-          "keywords": ["hinein", "rein", "gasthaus", "schankraum", "zurueck"]
+          "keywords": ["zurueck", "krug", "hinein", "schankraum"]
         },
         {
-          "label": "den Spuren folgen",
+          "label": "zum Registerhaus",
+          "target_scene_id": "register_house",
+          "keywords": ["register", "registerhaus", "schreiberhaus", "verwaltung", "schrift"]
+        },
+        {
+          "label": "zum Heilhaus",
+          "target_scene_id": "hospice",
+          "keywords": ["heilhaus", "hospiz", "naht", "heilerin"]
+        },
+        {
+          "label": "dem Wegstein folgen",
           "target_scene_id": "roadside_clue",
-          "keywords": ["spur", "spuren", "hinweis", "boden", "schlamm"]
+          "keywords": ["spur", "wegstein", "pfad", "wald", "weisssaum", "seufzerforst"]
         }
       ],
       "action_effects": {
         "observe": {
           "default": {
             "discovered_flags": ["inn_front_observed"],
-            "discovered_information": ["Die Spur im Kies fuehrt vom Gasthaus weg."],
-            "temporary_scene_flags": ["outside_surveyed"],
-            "status_message": "Du begutachtest den nassen Vorplatz.",
-            "prompt_hint": "Beschreibe die Laterne, den Regen und die dunkle Spur am Rand des Hofes.",
-            "fallback_narration": "Im Schein der Laterne hebt sich im nassen Kies eine dunklere Linie ab, als haette etwas Schweres hier geschliffen oder kurz innegehalten."
+            "discovered_information": ["Am Namenstein wirkt eine frische Kerbe zu alt, und die Spur im Kies zu glatt fuer blossen Regen."],
+            "facts": ["names_stone_feels_thin"],
+            "temporary_scene_flags": ["square_surveyed"],
+            "status_message": "Du liest den Platz wie einen schlecht beruhigten Vertrag.",
+            "prompt_hint": "Zeige Namenstein, Laterne, Registerhaus und die zu glatte Spur als zusammengehoeriges Warnbild.",
+            "fallback_narration": "Der Namenstein steht, als habe jemand ihm jede neue Last abgenommen; nur die Laterne weigert sich mit ihrem Zittern, die gleiche Stille zu teilen."
           },
           "clue": {
             "discovered_flags": ["found_first_clue"],
-            "discovered_information": ["Die erste Spur fuehrt zu einem verdreckten Hinweis am Wegesrand."],
+            "discovered_information": ["Die Spur fuehrt nicht chaotisch, sondern auffaellig geordnet zum Wegstein am Weisssaum."],
             "facts": ["clue_found_near_inn"],
             "quest_updates": [
               {
                 "quest_id": "missing_courier",
                 "progress_flags": ["found_road_clue"],
-                "objectives": ["report_back_to_inn"],
-                "summary_append": "Vor dem Gasthaus findest du einen zerrissenen Lederfaden und Spuren eines abrupten Handgemenges."
+                "objectives": ["check_register_discrepancy", "follow_roadside_clue", "return_with_findings"],
+                "summary_append": "Auf dem Namenhof fuehrt eine unnatuerlich glatte Spur vom Krug aus zum Wegstein am Weisssaum."
               }
             ],
             "target_scene_id": "roadside_clue",
-            "status_message": "Du gehst der Spur bis an den Rand der Strasse nach.",
-            "prompt_hint": "Fuehre die Szene dichter an die Spuren heran und mache den ersten Hinweis greifbar.",
-            "fallback_narration": "Du folgst der dunklen Spur ein paar Schritte weiter, bis der Hof in offenen Strassenschlamm uebergeht."
+            "status_message": "Du folgst der geglaetteten Spur aus dem Ort hinaus.",
+            "prompt_hint": "Fuehre die Szene vom Ortslicht in den unruhigen Randbereich aus Ankerrest und Waldpfad.",
+            "fallback_narration": "Die Spur verhaelt sich im Kies fast zu ordentlich, als haette jemand nicht nur Schritte, sondern auch Widerstand aus ihr herausgedrueckt."
+          }
+        }
+      }
+    },
+    {
+      "scene_id": "register_house",
+      "title": "Haus der Zweiten Schrift",
+      "location_name": "Registerhaus von Eidenkehr",
+      "description": "Zwischen doppelten Buechern, verrussten Siegeln und einer zu oft nachgezogenen Zeile sitzt Maren Ild ueber Registern, die dem Ort weniger Sicherheit geben, als sie versprechen. Hier riecht Ordnung nach Lampenoel, Tinte und der Angst, dass eine falsche Fassung am Ende die gueltige bleibt.",
+      "npcs": ["registrar"],
+      "scene_objects": ["doppelregister", "ruessuhr", "versiegelte mappe", "ausradierte zeile"],
+      "exits": [
+        {
+          "label": "zurueck auf den Namenhof",
+          "target_scene_id": "inn_front",
+          "keywords": ["zurueck", "hof", "namenhof", "krug"]
+        },
+        {
+          "label": "zum Heilhaus",
+          "target_scene_id": "hospice",
+          "keywords": ["heilhaus", "hospiz", "naht", "heilerin"]
+        },
+        {
+          "label": "zum Wegstein",
+          "target_scene_id": "roadside_clue",
+          "keywords": ["spur", "wegstein", "pfad", "wald", "weisssaum", "seufzerforst"]
+        }
+      ],
+      "action_effects": {
+        "observe": {
+          "default": {
+            "discovered_flags": ["visited_register_house", "observed_register_loss"],
+            "discovered_information": ["Eine Zeile zum Kurier wirkt nachtraeglich beruhigt, als haette jemand Streit aus der Tinte gewaschen."],
+            "facts": ["register_memory_mismatch"],
+            "status_message": "Du findest im Register eine zu glatte Luecke.",
+            "prompt_hint": "Beschreibe das Registerhaus als Ort, an dem Verwaltung selbst metaphysische Last traegt.",
+            "fallback_narration": "Auf einer Seite ist die Tinte zum Namen des Kuriers nicht verschmiert, sondern merkwuerdig befriedet, als habe sie beschlossen, nicht mehr weh zu tun."
+          }
+        },
+        "talk": {
+          "default": {
+            "discovered_flags": ["visited_register_house", "learned_false_register"],
+            "discovered_information": ["Maren Ild bestaetigt, dass eine Registerzeile nach dem Verschwinden des Kuriers nicht mehr zur Erinnerung des Ortes passt."],
+            "facts": ["register_line_changed_after_ink"],
+            "npc_memory": {
+              "npc_id": "registrar",
+              "last_topic": "register",
+              "relationship_delta": 1
+            },
+            "quest_updates": [
+              {
+                "quest_id": "missing_courier",
+                "progress_flags": ["learned_false_register"],
+                "objectives": ["follow_roadside_clue", "check_hospice_account", "return_with_findings"],
+                "summary_append": "Im Registerhaus bestaetigt Maren Ild, dass die letzte Eintragung zum Kurier nachtraeglich geglaettet wurde."
+              }
+            ],
+            "status_message": "Maren legt dir die Unstimmigkeit des Registers offen.",
+            "prompt_hint": "Die Registerhueterin soll nicht melodramatisch, sondern muede und praezise von der falschen Zeile sprechen.",
+            "fallback_narration": "Maren zeigt dir die Seite ohne Zierde. Sie sagt, der Eintrag zum Kurier stehe noch da, aber nicht mehr in derselben Spannung, in der er geschrieben wurde."
+          },
+          "courier": {
+            "discovered_flags": ["visited_register_house", "learned_false_register"],
+            "discovered_information": ["Maren Ild sagt, der Kurier trug eine zweite Fassung des Ortsregisters, die nun fehlt."],
+            "facts": ["register_line_changed_after_ink", "courier_carried_second_register"],
+            "npc_memory": {
+              "npc_id": "registrar",
+              "last_topic": "courier",
+              "relationship_delta": 1
+            },
+            "quest_updates": [
+              {
+                "quest_id": "missing_courier",
+                "progress_flags": ["learned_false_register"],
+                "objectives": ["follow_roadside_clue", "check_hospice_account", "return_with_findings"],
+                "summary_append": "Maren Ild bestaetigt, dass der Kurier eine zweite Registerfassung trug und der verbleibende Eintrag nachtraeglich geglaettet wirkt."
+              }
+            ],
+            "status_message": "Das Registerhaus verbindet den Kurier direkt mit der falschen Zeile.",
+            "prompt_hint": "Verbinde den verschwundenen Kurier mit der zweiten Registerfassung und der veraenderten Zeile.",
+            "fallback_narration": "Maren oeffnet eine leere Mappe und sagt, der Kurier habe die zweite Fassung des Ortsregisters getragen. Was uebrig sei, sehe aus wie ein Eintrag, dem jemand den Widerstand aus dem Leib genommen habe."
+          }
+        }
+      }
+    },
+    {
+      "scene_id": "hospice",
+      "title": "Haus der Ruhigen Naht",
+      "location_name": "Heilhaus von Eidenkehr",
+      "description": "Im Heilhaus ist alles sauberer, als es nach Grenzregen, Reiseverletzungen und armen Betten sein duerfte. Unter weissen Binden und in der ruhigen Stimme von Siv Lenor liegt Trost, aber auch die unheimliche Ahnung, dass hier nicht nur Schmerz verschwindet.",
+      "npcs": ["healer", "patient"],
+      "scene_objects": ["salbenschalen", "weisse bandage", "bleischale", "leeres bett"],
+      "exits": [
+        {
+          "label": "zurueck auf den Namenhof",
+          "target_scene_id": "inn_front",
+          "keywords": ["zurueck", "hof", "namenhof", "krug"]
+        },
+        {
+          "label": "zum Registerhaus",
+          "target_scene_id": "register_house",
+          "keywords": ["register", "registerhaus", "schrift", "verwaltung"]
+        },
+        {
+          "label": "zum Wegstein",
+          "target_scene_id": "roadside_clue",
+          "keywords": ["spur", "wegstein", "pfad", "wald", "weisssaum", "seufzerforst"]
+        }
+      ],
+      "action_effects": {
+        "observe": {
+          "default": {
+            "discovered_flags": ["visited_hospice", "observed_quiet_healing"],
+            "discovered_information": ["Die Wunden im Heilhaus schliessen schneller als die Erinnerungen der Patienten."],
+            "facts": ["healing_has_hidden_cost"],
+            "status_message": "Du bemerkst, dass die Ruhe des Heilhauses nicht nur gutartig wirkt.",
+            "prompt_hint": "Das Heilhaus soll triftig, hilfreich und zugleich beunruhigend glaubwuerdig wirken.",
+            "fallback_narration": "Nichts hier ist schmutzig genug fuer ein Grenzheilhaus. Selbst das Stoehnen fehlt, als habe jemand Schmerz und Widerspruch gemeinsam verbunden."
+          }
+        },
+        "talk": {
+          "default": {
+            "discovered_flags": ["visited_hospice", "learned_hospice_miracle"],
+            "discovered_information": ["Siv Lenor gibt zu, dass manche Genesung in Eidenkehr etwas anderes mitnimmt, oft Erinnerungsschwere oder Streit."],
+            "facts": ["healing_erases_edges"],
+            "npc_memory": {
+              "npc_id": "healer",
+              "last_topic": "healing",
+              "relationship_delta": 0
+            },
+            "quest_updates": [
+              {
+                "quest_id": "missing_courier",
+                "progress_flags": ["learned_hospice_miracle"],
+                "summary_append": "Im Heilhaus wird deutlich, dass die auffaellig guten Heilungen in Eidenkehr einen anderen Preis verlangen als nur Zeit oder Geld."
+              }
+            ],
+            "status_message": "Das Heilhaus bestaetigt einen Preis, den niemand offen ausschildert.",
+            "prompt_hint": "Die Heilerin soll verantwortungsvoll wirken, aber einen beunruhigenden Preis andeuten.",
+            "fallback_narration": "Siv Lenor sagt ohne Stolz, dass Eidenkehr manchmal weniger Blut verliere als Erinnerung. Sie nennt das keinen Diebstahl, nur eine andere Lastverteilung."
+          },
+          "courier": {
+            "discovered_flags": ["visited_hospice", "learned_hospice_miracle"],
+            "discovered_information": ["Siv Lenor behandelt den Kurier kurz vor dessen Verschwinden und erinnert sich an seine Wunde klarer als an sein Gesicht."],
+            "facts": ["healing_erases_edges", "courier_was_treated_before_disappearing"],
+            "npc_memory": {
+              "npc_id": "healer",
+              "last_topic": "courier",
+              "relationship_delta": 0
+            },
+            "quest_updates": [
+              {
+                "quest_id": "missing_courier",
+                "progress_flags": ["learned_hospice_miracle"],
+                "summary_append": "Siv Lenor behandelte den Kurier kurz vor seinem Verschwinden und erinnert seine Verletzung genauer als sein Gesicht."
+              }
+            ],
+            "status_message": "Das Heilhaus verknuepft den Kurier mit der stillen Heilmagie des Ortes.",
+            "prompt_hint": "Verbinde die Heilung des Kuriers mit der Frage, was in Eidenkehr fuer gute Genesung bezahlt wird.",
+            "fallback_narration": "Siv erinnert sich an den Schnitt am Unterarm des Kuriers und an das zu rasche Schliessen der Haut. Beim Gesicht stockt sie, als sei genau dort etwas geglaettet worden."
           }
         }
       }
     },
     {
       "scene_id": "roadside_clue",
-      "title": "Spur am Wegesrand",
-      "location_name": "Am Rand der Heerstrasse",
-      "description": "Nur wenige Schritte vor dem Gasthaus kniet der Abend im Schlamm. Zwischen Hufabdruecken und Regenrinnen liegt ein zerrissener Lederfaden, dazu ein tiefer Abdruck, als waere hier jemand im Kampf aus dem Schritt geraten.",
+      "title": "Wegstein am Weisssaum",
+      "location_name": "Pfad zum Seufzerforst",
+      "description": "Jenseits des Namenhofs duckt sich der Pfad zum Seufzerforst an einen alten Wegstein, in dessen Risse noch ein toter Ankerrest sitzt. Zwischen Hufabdruecken, zu glattem Schlamm und einem zerrissenen Registerfaden wirkt die Luft unheimlich ausgeruht, als sei selbst der Streit aus dieser Stelle gewaschen worden.",
       "npcs": [],
-      "scene_objects": ["lederfaden", "hufabdruecke", "tiefer abdruck", "regenschlamm"],
+      "scene_objects": ["alter wegstein", "ankerrest", "geglattete spur", "zerrissener registerfaden", "blasser moosrand"],
       "enter_effect": {
         "discovered_flags": ["clue_site_reached"],
-        "discovered_information": ["Am Wegesrand liegt ein Hinweis auf ein Handgemenge."],
-        "status_message": "Du erreichst den Ort, an dem die Spur deutlich wird."
+        "discovered_information": ["Am Wegstein ist der Pfad stiller als normal, als druecke etwas Unterschied aus den Dingen."],
+        "status_message": "Du erreichst den Weisssaum am alten Wegstein."
       },
       "exits": [
         {
-          "label": "zurueck vor das Gasthaus",
+          "label": "zurueck nach Eidenkehr",
           "target_scene_id": "inn_front",
-          "keywords": ["zurueck", "gasthaus", "hof", "laterne"]
+          "keywords": ["zurueck", "hof", "krug", "eidenkehr", "namenhof"]
+        },
+        {
+          "label": "zum Registerhaus",
+          "target_scene_id": "register_house",
+          "keywords": ["register", "registerhaus", "schrift", "verwaltung"]
+        },
+        {
+          "label": "zum Heilhaus",
+          "target_scene_id": "hospice",
+          "keywords": ["heilhaus", "hospiz", "naht", "heilerin"]
         }
       ],
       "action_effects": {
         "observe": {
           "default": {
             "discovered_flags": ["found_first_clue"],
-            "discovered_information": ["Ein zerrissener Lederfaden und ein tiefer Abdruck deuten auf ein abruptes Handgemenge."],
-            "facts": ["clue_found_near_inn"],
+            "discovered_information": ["Der zerrissene Registerfaden und die geglaetteten Spuren zeigen, dass der Kurier hier nicht einfach nur vom Weg abkam."],
+            "facts": ["clue_found_near_inn", "white_ebb_touches_border", "courier_route_was_interrupted"],
             "quest_updates": [
               {
                 "quest_id": "missing_courier",
                 "progress_flags": ["found_road_clue"],
-                "objectives": ["report_back_to_inn"],
-                "summary_append": "Vor dem Gasthaus findest du einen zerrissenen Lederfaden und Spuren eines abrupten Handgemenges."
+                "objectives": ["return_with_findings", "compare_register_and_memory"],
+                "summary_append": "Am Wegstein am Weisssaum findest du einen zerrissenen Registerfaden und zu glatte Spuren, die auf Eingriff statt Zufall deuten."
               }
             ],
-            "status_message": "Du findest einen ersten verwertbaren Hinweis.",
-            "prompt_hint": "Beschreibe den Lederfaden, die verwischten Spuren und das Gefuehl, dass hier etwas abrupt endete.",
-            "fallback_narration": "Zwischen Schlamm und Hufabdruecken entdeckst du einen zerrissenen Lederfaden sowie eine verschobene Spur, die nicht zu einem ruhigen Aufbruch passt."
+            "status_message": "Du sicherst am Wegstein den ersten harten Hinweis.",
+            "prompt_hint": "Beschreibe den Ort als erste konkrete Beruehrung mit der Weissen Ebbe, ohne den Fall schon aufzuloesen.",
+            "fallback_narration": "Der Faden im Schlamm ist kein Lederriemen, sondern ein Registerband. Daneben endet eine Spur nicht abrupt, sondern auffaellig ohne Kampflaerm, als habe jemand auch dem Widerstand die Kanten genommen."
           },
           "clue": {
             "discovered_flags": ["found_first_clue"],
-            "discovered_information": ["Die Spuren am Wegesrand bestaetigen, dass der Kurier nicht freiwillig verschwand."],
-            "facts": ["courier_route_was_interrupted"],
+            "discovered_information": ["Am Wegstein sind Name, Spur und Nachhall gleichermassen verletzt worden."],
+            "facts": ["clue_found_near_inn", "white_ebb_touches_border", "courier_route_was_interrupted"],
             "quest_updates": [
               {
                 "quest_id": "missing_courier",
                 "progress_flags": ["found_road_clue"],
-                "objectives": ["report_back_to_inn"],
-                "summary_append": "Vor dem Gasthaus findest du einen zerrissenen Lederfaden und Spuren eines abrupten Handgemenges."
+                "objectives": ["return_with_findings", "compare_register_and_memory"],
+                "summary_append": "Der Wegstein traegt dieselbe unnatuerliche Glattung wie Register und Erinnerungen in Eidenkehr."
               }
             ],
-            "status_message": "Du sicherst den ersten Hinweis am Wegesrand.",
-            "prompt_hint": "Beschreibe konkret den Lederfaden und die Kampfspur, ohne den Fall sofort aufgeloest wirken zu lassen.",
-            "fallback_narration": "Als du den Schlamm genauer pruefst, wird klar, dass hier nicht nur jemand vorbeiritt; etwas oder jemand wurde ploetzlich aus dem Takt gebracht."
+            "status_message": "Die Spur am Wegstein verbindet den Kurierfall mit etwas Groesserem und Stilleren.",
+            "prompt_hint": "Mache die Weisssaum-Symptome konkret, still und beunruhigend.",
+            "fallback_narration": "An der Kante des Wegsteins fehlt nicht nur Moos, sondern auch Widerstand. Wo sonst Nachhall haengen wuerde, bleibt nur eine stumpfe Ruhe, die zu freundlich fuer echtes Schweigen ist."
           }
         }
       }

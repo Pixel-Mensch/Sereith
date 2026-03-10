@@ -1,0 +1,41 @@
+{
+  "region_id": "valedorn_west_border",
+  "settlement": {
+    "location_id": "eidenkehr",
+    "name": "Eidenkehr",
+    "type": "Strassenort",
+    "summary": "Ein kleiner Marktweiler an der westlichen Heerstrasse, in dem Reisende, Register und Nachhallspuren enger zusammenliegen, als den Bewohnern lieb ist."
+  },
+  "locations": [
+    {
+      "location_id": "inn_hinterlegter_krug",
+      "name": "Der Hinterlegte Krug",
+      "type": "Gasthaus"
+    },
+    {
+      "location_id": "house_second_script",
+      "name": "Haus der Zweiten Schrift",
+      "type": "Registerhaus"
+    },
+    {
+      "location_id": "house_quiet_seam",
+      "name": "Haus der Ruhigen Naht",
+      "type": "Heilhaus"
+    },
+    {
+      "location_id": "names_stone",
+      "name": "Namenstein von Eidenkehr",
+      "type": "Schrein"
+    },
+    {
+      "location_id": "seufzer_path",
+      "name": "Pfad zum Seufzerforst",
+      "type": "Waldpfad"
+    },
+    {
+      "location_id": "anchor_waystone",
+      "name": "Wegstein am Weisssaum",
+      "type": "Ankerrest"
+    }
+  ]
+}

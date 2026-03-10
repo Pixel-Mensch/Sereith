@@ -7,37 +7,43 @@ Relevant files: `src/ai_pnp/services/llm/narrator_client.py`, `src/ai_pnp/servic
 Expected outcome: Confirmed real model narration from the local Ollama service without losing the safe fallback path.
 Notes: In the latest local validation run, the service was not reachable, so only the fallback path was verified.
 
-2. Move narrator calls off the desktop UI thread.
+2. Deepen the Sereith starter campaign beyond the first clue.
+Status: Pending
+Relevant files: `src/ai_pnp/content/scenarios/prologue.json`, `src/ai_pnp/content/quests/starter_questline.json`, `src/ai_pnp/content/npcs/starter_npcs.json`, `src/ai_pnp/engine/state/state_updater.py`
+Expected outcome: The first region gains follow-up scenes, stronger branching, and more than one meaningful return path after the Weisssaum clue.
+Notes: The current verified content covers Eidenkehr, its register/healing tensions, and the first White Ebb trace, but it still stops after the initial hard clue.
+
+3. Move narrator calls off the desktop UI thread.
 Status: Pending
 Relevant files: `src/ai_pnp/ui/desktop/main_window.py`, `src/ai_pnp/services/llm/narrator_client.py`, `src/ai_pnp/engine/game_engine.py`
 Expected outcome: The desktop window remains responsive while the narrator request is running.
 Notes: The current verified desktop UI now gives clearer feedback during actions, but narrator calls are still synchronous and can block during slow local-model responses.
 
-3. Deepen the deterministic engine path for campaign memory and quest progression.
+4. Deepen the deterministic engine path for campaign memory and quest progression.
 Status: Pending
 Relevant files: `src/ai_pnp/engine/flow/turn_processor.py`, `src/ai_pnp/engine/state/state_updater.py`, `src/ai_pnp/services/memory/`, `src/ai_pnp/services/content/scene_repository.py`
 Expected outcome: Richer state updates, clearer campaign continuity, and stronger engine-owned truth.
 Notes: The current scaffold now has scene memory, short-term memory, long-term memory, and summary generation, but only for the first mini-flow.
 
-4. Expand tests around narrator failure modes, desktop-engine integration, memory retrieval quality, and quest branching.
+5. Expand tests around narrator failure modes, desktop-engine integration, memory retrieval quality, and quest branching.
 Status: Pending
 Relevant files: `tests/`
 Expected outcome: Small reliable regression coverage for the prototype path.
-Notes: Current verified coverage includes twelve focused tests plus manual desktop start/action/save/load verification.
+Notes: Current verified coverage includes thirteen focused tests plus manual desktop flow verification through the Sereith starter route.
 
-5. Move persistence toward the documented MVP storage direction.
+6. Move persistence toward the documented MVP storage direction.
 Status: Pending
 Relevant files: `src/ai_pnp/services/storage/save_repository.py`, future `db/sqlite/`
 Expected outcome: SQLite-backed game state with clear save/load behavior.
 Notes: Current verified state is JSON save/load with slot naming via the engine API and CLI commands.
 
-6. Refresh the lightweight module maps after the runtime path change.
+7. Refresh the lightweight module maps after the runtime path change.
 Status: Pending
 Relevant files: `docs/module-maps/`, `ARCHITECTURE.md`
 Expected outcome: Low-cost navigation docs that match the active engine structure.
 Notes: Module maps still reflect the earlier scaffold and do not yet cover the cleaned canonical `src/ai_pnp` layout.
 
-7. Decide how far the desktop UI should surface session summaries, facts, and NPC memory without overloading the screen.
+8. Decide how far the desktop UI should surface session summaries, facts, and NPC memory without overloading the screen.
 Status: Pending
 Relevant files: `src/ai_pnp/ui/desktop/main_window.py`, `src/ai_pnp/engine/game_engine.py`
 Expected outcome: A clearer plan for the next useful information panels after the current status/quest/inventory/log baseline.
@@ -61,3 +67,9 @@ Status: Completed
 Relevant files: `Start_AI-PnP.bat`, `README.md`
 Expected outcome: The project can be started on Windows by double-click without manually typing the Python command.
 Notes: Completed as a root batch launcher that tries `pyw`, `pythonw`, `py`, and `python` in that order.
+
+4. Replace the generic starter content with a Sereith-grounded starter region.
+Status: Completed
+Relevant files: `src/ai_pnp/content/`, `src/ai_pnp/services/content/quest_repository.py`, `src/ai_pnp/services/content/npc_repository.py`, `src/ai_pnp/services/llm/prompt_builder.py`, `tests/test_engine_smoke.py`
+Expected outcome: The first playable content reflects Sereith's world logic, starter region, and mini-campaign instead of generic fantasy placeholder material.
+Notes: Completed with Eidenkehr on the Valedorn-Seufzerforst border, new lore JSON, starter NPCs, a revised missing-courier questline, White Ebb signals, and verified route coverage through register house, healing house, and the Weisssaum clue site.

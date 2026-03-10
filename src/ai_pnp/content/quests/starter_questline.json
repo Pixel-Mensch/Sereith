@@ -1,0 +1,24 @@
+{
+  "questline_id": "still_registers_of_eidenkehr",
+  "title": "Die stillen Register von Eidenkehr",
+  "summary": "Ein verschwundener Kurier, unstimmige Registereintraege, zu erfolgreiche Heilung und erste Spuren der Weissen Ebbe verdichten sich im Grenzort Eidenkehr zu einem stillen Knoten.",
+  "hooks": [
+    "Der Kurier trug Registerblaetter, die mehrere lokale Bindungen bestaetigen oder widerrufen koennen.",
+    "Menschen erinnern den letzten Abend des Kuriers unterschiedlich, als haette jemand Reibung aus dem Geschehen gestrichen.",
+    "Das Heilhaus meldet ungewoehnlich saubere Genesungen, doch Patienten verlieren dabei etwas Schweres und nicht immer Sichtbares."
+  ],
+  "quests": [
+    {
+      "quest_id": "missing_courier",
+      "title": "Der verschwundene Kurier",
+      "status": "active",
+      "summary": "Ein Kurier mit Registergut verschwand zwischen Gasthaus, Registerhaus und dem Wegstein am Seufzerforstrand, waehrend sich Erinnerungen und Heilungen in Eidenkehr zu glatt anfuehlen.",
+      "objectives": [
+        "speak_with_innkeeper",
+        "check_register_discrepancy",
+        "follow_roadside_clue"
+      ],
+      "progress_flags": []
+    }
+  ]
+}

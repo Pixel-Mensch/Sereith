@@ -1,0 +1,34 @@
+{
+  "factions": [
+    {
+      "faction_id": "surveyors_flame",
+      "name": "Collegium der Vermesserflamme",
+      "summary": "Vermesser, Pruefer und Grenzleser, die Orte, Anker und Risse kartieren, bevor anderes sie beansprucht."
+    },
+    {
+      "faction_id": "keepers_last_names",
+      "name": "Hueter der Letzten Namen",
+      "summary": "Schreiber und Wahrer, die Namen, Bindungen und letzte gueltige Fassungen von Erinnerung schuetzen."
+    },
+    {
+      "faction_id": "choir_last_cup",
+      "name": "Chor des Letzten Bechers",
+      "summary": "Ein loses Netz aus Wirtshaeusern, Reisenden und Gastgebern, die Abschiede, Gestandnisse und letzte Zeugen sammeln."
+    },
+    {
+      "faction_id": "ironmoon_compact",
+      "name": "Eisenmondbund",
+      "summary": "Pragmatische Bundner aus Wachtleuten, Transporteuren und Vertragshaltern, die Grenzruhe notfalls mit haerteren Mitteln kaufen."
+    },
+    {
+      "faction_id": "silent_crown",
+      "name": "Stille Krone",
+      "summary": "Eine schwer greifbare Macht, die Ordnung und Ruhe hochhaelt, auch wenn dabei Reibung und Widerspruch verschwinden."
+    },
+    {
+      "faction_id": "ashen_banner",
+      "name": "Aschenbanner",
+      "summary": "Trupps und Prediger, die Auszehrung lieber im offenen Brand sehen als in stiller Glattung."
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "themes": [
+    "Preis und Gegenleistung",
+    "Erinnerung als Identitaet",
+    "Nachhall und metaphysische Reste",
+    "Bindung, Wuerde und soziale Pflicht",
+    "Ordnung gegen Freiheit",
+    "Auszehrung hinter scheinbarem Frieden"
+  ],
+  "narrative_do": [
+    "konkrete sinnliche Beobachtung",
+    "moralische Mehrdeutigkeit",
+    "kleine menschliche Kosten im grossen metaphysischen Rahmen"
+  ],
+  "narrative_avoid": [
+    "kostenlose Wunder",
+    "generische Heldensprache",
+    "einfache Gut-Boese-Aufloesungen"
+  ]
+}

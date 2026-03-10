@@ -1,0 +1,67 @@
+{
+  "npcs": [
+    {
+      "npc_id": "innkeeper",
+      "name": "Selda Nereth",
+      "role": "Wirtin des Hinterlegten Krugs",
+      "summary": "wachsam, erschuettert und daran gewoehnt, dass Gestandnisse in ihrem Haus teurer sind als Bier",
+      "goal": "Eidenkehr ruhig halten, bis klar ist, was mit dem Kurier und den Registern geschah.",
+      "fear": "Dass ihr Gasthaus zum Ort eines stillen Vertuschens wird.",
+      "ties": ["choir_last_cup"]
+    },
+    {
+      "npc_id": "registrar",
+      "name": "Maren Ild",
+      "role": "Registerhueterin",
+      "summary": "praezise, uebermuedet und zutiefst beunruhigt von Zeilen, die nicht mehr mit Erinnerungen uebereinstimmen",
+      "goal": "Die letzte gueltige Fassung des Ortsregisters retten.",
+      "fear": "Dass jemand bemerkt, wie viele Eintraege bereits geglaettet wurden.",
+      "ties": ["keepers_last_names"]
+    },
+    {
+      "npc_id": "healer",
+      "name": "Siv Lenor",
+      "role": "Heilerin des Hauses der Ruhigen Naht",
+      "summary": "sanft, gefasst und unheimlich erfolgreich darin, Schmerzen verschwinden zu lassen",
+      "goal": "Weitere Todesfaelle verhindern, koste es, was es will.",
+      "fear": "Dass ihre Heilungen mehr nehmen, als sie zugibt.",
+      "ties": []
+    },
+    {
+      "npc_id": "surveyor",
+      "name": "Teren Vael",
+      "role": "Vermesser der Flamme",
+      "summary": "karg, neugierig und mit Blick fuer Ankerreste, als waere jeder Wegstein ein Zeuge",
+      "goal": "Den Wegstein am Weisssaum pruefen, bevor die lokale Verwaltung ihn versiegelt.",
+      "fear": "Zu spaet zu erkennen, dass die Weisse Ebbe hier bereits mitliest.",
+      "ties": ["surveyors_flame"]
+    },
+    {
+      "npc_id": "pilgrim",
+      "name": "Arel Surn",
+      "role": "Wandersaengerin",
+      "summary": "freundlich, zu aufmerksam und darum bemueht, Namen laut genug im Raum zu halten",
+      "goal": "Erinnerungen festhalten, bevor sie glatt werden.",
+      "fear": "Selbst zu einer austauschbaren Stimme zu werden.",
+      "ties": ["choir_last_cup"]
+    },
+    {
+      "npc_id": "ranger",
+      "name": "Ors Vehl",
+      "role": "Grenzlaeufer",
+      "summary": "kurz angebunden, regenhart und nicht bereit zuzugeben, wie sehr ihm der Waldrand missfaellt",
+      "goal": "Den Saum zum Seufzerforst offen halten.",
+      "fear": "Dass der Wegstein bereits mehr Stille als Schutz bindet.",
+      "ties": ["ironmoon_compact"]
+    },
+    {
+      "npc_id": "patient",
+      "name": "Liora Hehn",
+      "role": "Genesene Botin",
+      "summary": "unversehrt, ruhig und irritierend leer in den Blicken, wenn sie ueber gestern sprechen soll",
+      "goal": "Herausfinden, was ihr fehlt, obwohl die Wunde verschwunden ist.",
+      "fear": "Dass ihre Erinnerung nur eine brauchbare Fassung geworden ist.",
+      "ties": []
+    }
+  ]
+}

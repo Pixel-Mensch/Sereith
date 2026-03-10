@@ -1,0 +1,18 @@
+{
+  "world_name": "Sereith",
+  "high_concept": "Eine Welt der Narben, Vertraege und Nachhalle, in der Macht immer Kosten verschiebt und Erinnerung Identitaet bleibt.",
+  "core_truths": [
+    "Nichts wird aus dem Nichts geformt.",
+    "Jede Wirkung verlangt einen Preis.",
+    "Dauer braucht Anker.",
+    "Nachhall verdirbt die Wirklichkeit.",
+    "Namen und Beziehungen sind real."
+  ],
+  "cultural_axes": [
+    "Ordnung gegen Freiheit",
+    "Wuerde gegen Nuetzlichkeit",
+    "Bindung gegen Auszehrung",
+    "Erinnerung gegen Vereinheitlichung"
+  ],
+  "default_play_scope": "Kleine regionale Konflikte, soziale Kosten, metaphysische Risse und persoenliche Bindungen vor dem Hintergrund groesserer Bedrohungen."
+}

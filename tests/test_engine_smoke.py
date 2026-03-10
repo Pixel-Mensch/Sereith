@@ -101,7 +101,7 @@ def test_save_and_load_preserve_extended_memory_state(tmp_path: Path) -> None:
 
     assert "Spielstand geladen" in response.message
     assert "courier_last_seen_at_inn" in reloaded.state.facts
-    assert "Vor dem Gasthaus" in reloaded.state.discovered_locations
+    assert "Vor dem Hinterlegten Krug" in reloaded.state.discovered_locations
     assert "found_road_clue" in reloaded.state.quest_progress
     assert reloaded.state.npc_memory
 
@@ -115,6 +115,24 @@ def test_scene_change_updates_scene_memory(tmp_path: Path) -> None:
     assert current_scene["scene_id"] == "inn_front"
     assert "laterne" in current_scene["scene_objects"]
     assert current_scene["npc_present"] == []
+
+
+def test_sereith_starter_flow_reaches_register_hospice_and_clue(tmp_path: Path) -> None:
+    engine = build_engine(tmp_path)
+
+    engine.process_player_action("frage die wirtin nach dem kurier")
+    engine.process_action("gehe zum registerhaus")
+    engine.process_player_action("frage nach dem kurier")
+    engine.process_action("gehe zum heilhaus")
+    engine.process_player_action("frage nach dem kurier")
+    engine.process_action("gehe zum wegstein")
+    engine.process_player_action("untersuche die spur")
+
+    assert engine.get_current_scene()["scene_id"] == "roadside_clue"
+    assert "learned_false_register" in engine.state.quest_progress
+    assert "learned_hospice_miracle" in engine.state.quest_progress
+    assert "found_road_clue" in engine.state.quest_progress
+    assert "white_ebb_touches_border" in engine.state.facts
 
 
 def test_engine_ui_methods_return_simple_data(tmp_path: Path) -> None:
@@ -132,7 +150,7 @@ def test_engine_ui_methods_return_simple_data(tmp_path: Path) -> None:
     assert isinstance(engine.get_visible_npcs(), list)
     assert isinstance(engine.get_last_narration(), str)
     assert isinstance(engine.get_recent_log(), list)
-    assert engine.get_visible_npcs()[0]["name"] == "Selda"
+    assert engine.get_visible_npcs()[0]["name"].startswith("Selda")
 
 
 def test_save_and_load_api_are_ui_friendly_and_serializable(tmp_path: Path) -> None:
@@ -182,7 +200,7 @@ def test_main_window_refresh_populates_panels(tmp_path: Path) -> None:
         inventory = window.inventory_text.get("1.0", "end-1c")
         npcs = window.npc_text.get("1.0", "end-1c")
 
-        assert "Gasthaus am Heerweg" in story
+        assert "Der Hinterlegte Krug" in story
         assert "Der verschwundene Kurier" in quests
         assert "Noch kein Inventar eingetragen." in inventory
         assert "Selda" in npcs
