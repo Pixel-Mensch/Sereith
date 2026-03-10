@@ -2,6 +2,7 @@ from pathlib import Path
 import json
 
 from ai_pnp.core.app_config import AppConfig
+from ai_pnp.core.application import Application
 from ai_pnp.engine.flow.turn_processor import TurnProcessor
 from ai_pnp.engine.game_engine import GameEngine
 from ai_pnp.engine.parsing.action_interpreter import ActionInterpreter
@@ -14,6 +15,7 @@ from ai_pnp.services.llm.prompt_builder import PromptBuilder
 from ai_pnp.services.memory.memory_service import MemoryService
 from ai_pnp.services.memory.session_summary_service import SessionSummaryService
 from ai_pnp.services.storage.save_repository import SaveRepository
+from ai_pnp.ui.cli.runner import handle_cli_input, run
 
 
 def build_engine(tmp_path: Path) -> GameEngine:
@@ -88,12 +90,12 @@ def test_session_summary_is_generated_after_ten_turns(tmp_path: Path) -> None:
 def test_save_and_load_preserve_extended_memory_state(tmp_path: Path) -> None:
     engine = build_engine(tmp_path)
     engine.process_player_action("frage die wirtin nach dem kurier")
-    engine.handle_input("gehe hinaus")
+    engine.process_action("gehe hinaus")
     engine.process_player_action("untersuche die spuren")
-    engine.handle_input("save campaign1")
+    handle_cli_input(engine, "save campaign1")
 
     reloaded = build_engine(tmp_path)
-    response = reloaded.handle_input("load campaign1")
+    response = handle_cli_input(reloaded, "load campaign1")
 
     assert "Spielstand geladen" in response.message
     assert "courier_last_seen_at_inn" in reloaded.state.facts
@@ -105,7 +107,7 @@ def test_save_and_load_preserve_extended_memory_state(tmp_path: Path) -> None:
 def test_scene_change_updates_scene_memory(tmp_path: Path) -> None:
     engine = build_engine(tmp_path)
 
-    engine.handle_input("gehe hinaus")
+    engine.process_action("gehe hinaus")
 
     current_scene = engine.get_current_scene()
     assert current_scene["scene_id"] == "inn_front"
@@ -139,3 +141,24 @@ def test_save_and_load_api_are_ui_friendly_and_serializable(tmp_path: Path) -> N
     assert loaded["ok"] is True
     assert loaded["scene"]["scene_id"] == reloaded.state.world.current_scene_id
     json.dumps(reloaded.state.to_dict())
+
+
+def test_application_boots_with_engine() -> None:
+    app = Application()
+
+    assert app.engine.get_current_scene()["scene_id"] == "roadside_inn_intro"
+
+
+def test_cli_runner_is_importable_and_owns_the_loop(tmp_path: Path) -> None:
+    engine = build_engine(tmp_path)
+    outputs: list[str] = []
+    commands = iter(["quit"])
+
+    run(
+        engine=engine,
+        input_func=lambda _prompt="": next(commands),
+        output_func=outputs.append,
+    )
+
+    assert outputs[0] == "AI-PnP gestartet"
+    assert any("Spiel beendet." in line for line in outputs)

@@ -9,9 +9,10 @@
 ## Current verified local architecture
 - Active entry point: `main.py`
 - Alternate CLI entry point: `scripts/run_cli.py`
-- Runtime path: `main.py` -> `ai_pnp.core.application.Application` -> `ai_pnp.engine.game_engine.GameEngine`
+- Runtime path: `main.py` -> `ai_pnp.core.application.Application` -> desktop mode or CLI runner -> `ai_pnp.engine.game_engine.GameEngine`
 - Core package: `src/ai_pnp/`
 - Current default launch mode: `desktop` via `src/ai_pnp/data/config/app_config.json`
+- The top-level `src/` tree now contains only `src/ai_pnp/`.
 - Main services currently wired into the application:
   - `services/content/scene_repository.py`
   - `services/content/quest_repository.py`
@@ -30,7 +31,7 @@
 - Current UI paths:
   - desktop window in `src/ai_pnp/ui/desktop/main_window.py`
   - desktop launcher in `src/ai_pnp/ui/desktop/app.py`
-  - CLI loop inside `src/ai_pnp/engine/game_engine.py`
+  - CLI runner in `src/ai_pnp/ui/cli/runner.py`
 - Current persistence path: JSON autosave under `src/ai_pnp/data/saves/`
 
 ## Verified modules
@@ -46,6 +47,8 @@
 ## Important flows
 - Current startup flow:
   `main.py` -> `Application` -> config + repositories + engine services -> `Application.run()` -> desktop or CLI mode
+- Current CLI flow:
+  `scripts/run_cli.py` or `Application.run_cli()` -> `ui/cli/runner.py` -> engine methods (`process_action`, `save_game`, `load_game`, `render_state_summary`)
 - Current desktop flow:
   `MainWindow` -> engine UI methods (`get_*`, `process_player_action`, `save_game`, `load_game`) -> engine/services -> UI refresh
 - Current turn flow:
@@ -58,10 +61,7 @@
   scene memory lives in `WorldState` -> short-term memory in `turn_log` -> long-term memory in facts/quest progress/NPC memory -> summary snapshots every 10 turns
 
 ## Verified ambiguities
-- Parallel top-level folders also exist under `src/ai/`, `src/engine/`, `src/ui/`, and `src/data/`.
-- The current inspected entry path does not use those folders directly.
-- Until documented otherwise, treat `src/ai_pnp/` as the canonical application path and the parallel folders as unresolved structure.
-- Older local placeholder modules such as `content_loader.py`, `memory_service.py`, and `rules_engine.py` remain present but are not part of the active runtime path.
+- Older local placeholder modules such as `content_loader.py` and `rules_engine.py` remain present inside `src/ai_pnp/services/`, but they are not part of the active runtime path.
 - The live Ollama provider path is implemented, but successful model output was not verifiable in this session because the local service was unreachable.
 - The desktop UI is currently synchronous and therefore sensitive to slow narrator calls.
 
@@ -72,7 +72,7 @@
 - `src/ai_pnp/core/application.py`: wires config, repositories, narrator, and engine services into the runtime and launches desktop or CLI mode.
 - `src/ai_pnp/core/app_config.py`: loads the local runtime configuration from JSON.
 - `src/ai_pnp/core/models/npc_memory.py`: persistent per-NPC memory records.
-- `src/ai_pnp/engine/game_engine.py`: owns initial state creation, CLI command handling, UI-friendly engine methods, and runtime orchestration.
+- `src/ai_pnp/engine/game_engine.py`: owns initial state creation, UI-friendly engine methods, and runtime orchestration without direct CLI I/O.
 - `src/ai_pnp/engine/flow/turn_processor.py`: executes the per-turn pipeline.
 - `src/ai_pnp/engine/parsing/action_interpreter.py`: classifies raw player actions into coarse intents.
 - `src/ai_pnp/engine/state/state_updater.py`: applies deterministic state changes and turn logging.
@@ -84,9 +84,10 @@
 - `src/ai_pnp/services/llm/ollama_client.py`: encapsulates the local Ollama HTTP call.
 - `src/ai_pnp/services/llm/narrator_client.py`: narrator facade with provider selection and fallback handling.
 - `src/ai_pnp/services/storage/save_repository.py`: current JSON save/load implementation.
+- `src/ai_pnp/ui/cli/runner.py`: owns CLI command parsing, the interactive loop, and console I/O.
 - `src/ai_pnp/ui/desktop/app.py`: thin launcher for the desktop app.
 - `src/ai_pnp/ui/desktop/main_window.py`: first `tkinter` window with story, status, quests, and save/load controls.
-- `tests/test_engine_smoke.py`: current focused engine, memory, save/load, and engine-API regression test set.
+- `tests/test_engine_smoke.py`: current focused engine, memory, save/load, application-boot, and CLI-runner regression test set.
 
 ## Principles
 - UI must not own game logic.

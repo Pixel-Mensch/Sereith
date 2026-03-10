@@ -1,14 +1,5 @@
-from dataclasses import dataclass
-
 from ai_pnp.core.models.character import Character
 from ai_pnp.core.models.game_state import GameState
-
-
-@dataclass
-class EngineResponse:
-    message: str
-    should_quit: bool = False
-
 
 class GameEngine:
     def __init__(self, scene_repository, quest_repository, save_repository, turn_processor) -> None:
@@ -181,42 +172,3 @@ class GameEngine:
 
     def process_action(self, action: str) -> dict:
         return self.process_player_action(action)
-
-    def handle_input(self, raw_input: str) -> EngineResponse:
-        action = raw_input.strip()
-        if not action:
-            return EngineResponse("Leere Eingabe ignoriert.")
-
-        lowered = action.lower()
-        if lowered == "quit":
-            return EngineResponse("Spiel beendet.", should_quit=True)
-        if lowered.startswith("save"):
-            parts = action.split(maxsplit=1)
-            result = self.save_game(parts[1].strip() if len(parts) > 1 else None)
-            return EngineResponse(result["message"])
-        if lowered.startswith("load"):
-            parts = action.split(maxsplit=1)
-            result = self.load_game(parts[1].strip() if len(parts) > 1 else None)
-            if not result["ok"]:
-                return EngineResponse(result["message"])
-            return EngineResponse(f"{result['message']}\n\n{self.describe_current_scene()}")
-        if lowered == "state":
-            return EngineResponse(self.render_state_summary())
-
-        result = self.process_player_action(action)
-        if not result["ok"]:
-            return EngineResponse(result["message"])
-        message = result["narration"]
-        if result["system_note"]:
-            message = f"{message}\n\n[System: {result['system_note']}]"
-        return EngineResponse(message)
-
-    def run_cli(self) -> None:
-        print("AI-PnP gestartet")
-        print("Befehle: save [name], load [name], state, quit\n")
-        print(self.describe_current_scene())
-        while True:
-            response = self.handle_input(input("\n> "))
-            print(f"\n{response.message}")
-            if response.should_quit:
-                break

@@ -53,7 +53,9 @@ class Application:
         self.run_cli()
 
     def run_cli(self) -> None:
-        self.engine.run_cli()
+        from ai_pnp.ui.cli.runner import run
+
+        run(self.engine)
 
     def run_desktop(self) -> None:
         from ai_pnp.ui.desktop.app import DesktopApp

@@ -10,14 +10,15 @@
 - Git repository is initialized with `main` and `dev`.
 - The current working branch is `dev`.
 - The working tree was clean before this session started.
-- A Python package scaffold exists under `src/ai_pnp/`.
+- `src/` now contains only the canonical application package `src/ai_pnp/`.
 - `main.py` now starts `Application.run()`.
-- The active runtime path is `main.py` -> `Application` -> `ai_pnp.engine.game_engine.GameEngine`.
+- The active runtime path is `main.py` -> `Application` -> desktop mode or CLI runner -> `ai_pnp.engine.game_engine.GameEngine`.
 - `Application` currently reads `ui_mode` from `src/ai_pnp/data/config/app_config.json`.
 - The default local `ui_mode` is `desktop`.
 - A first `tkinter` desktop prototype now exists under `src/ai_pnp/ui/desktop/`.
 - The desktop prototype exposes story text, free-text action input, player status, active quests, and save/load/new-game controls.
-- The CLI loop still exists with `save`, `load`, `state`, and `quit` commands and remains reachable when `ui_mode` is set to `cli`.
+- The CLI loop now lives in `src/ai_pnp/ui/cli/runner.py`.
+- The CLI still supports `save`, `load`, `state`, and `quit` and remains reachable when `ui_mode` is set to `cli` or via `scripts/run_cli.py`.
 - A `TurnProcessor` exists and routes raw actions through action interpretation, prompt building, narrator selection, state updates, and autosave.
 - `SceneRepository`, `QuestRepository`, and `NpcRepository` load the first playable mini-flow from JSON content files.
 - The playable scenario currently covers four scenes: `roadside_inn_intro`, `inn_common_room`, `inn_front`, and `roadside_clue`.
@@ -30,9 +31,8 @@
 - JSON-based save and load support exists through `SaveRepository`.
 - `GameEngine` now exposes UI-oriented methods for player status, quests, current scene, last narration, recent log, save/load, and turn processing.
 - `pyproject.toml` exists with a basic setuptools package definition for Python 3.11+.
-- `tests/test_engine_smoke.py` exists and currently covers log capping, quest progress, NPC memory, session summaries, save/load, scene-memory updates, and UI-friendly engine API behavior.
+- `tests/test_engine_smoke.py` exists and currently covers log capping, quest progress, NPC memory, session summaries, save/load, scene-memory updates, UI-friendly engine API behavior, application boot, and CLI-runner startup.
 - `docs/module-maps/` exists with initial module notes.
-- Additional parallel folders exist under `src/ai/`, `src/engine/`, `src/ui/`, and `src/data/`. Their role relative to `src/ai_pnp/` is not yet fully documented.
 - In the latest local validation run, engine initialization, turn processing, save/load, `tkinter` window creation, and `MainWindow` startup all worked.
 - In the latest local validation run, the Ollama fallback path was exercised because the local Ollama service was not reachable from this environment.
 
@@ -41,9 +41,8 @@
 - `src/ai_pnp/engine/`: active engine flow with game engine, action interpretation, turn processing, and state updates.
 - `src/ai_pnp/services/`: scene, quest, and NPC loading; Ollama/fallback narration; memory services; prompt building; and persistence.
 - `src/ai_pnp/content/`: JSON world, scenario, NPC, quest, and prompt data for the first mini-flow.
-- `src/ai_pnp/ui/`: CLI wrapper plus placeholder desktop UI module.
+- `src/ai_pnp/ui/`: CLI and desktop UI layers over the same engine core.
 - `docs/module-maps/`: lightweight handwritten module summaries.
-- Parallel starter areas also exist under `src/ai/`, `src/engine/`, `src/ui/`, and `src/data/`.
 
 ## Completed work
 - Control-file workflow established.
@@ -60,24 +59,24 @@
 - The engine API was stabilized for UI consumption, including `get_last_narration()`, `get_recent_log()`, and dict-based save/load/action responses.
 - The placeholder desktop module was replaced with a functional `tkinter` prototype wired directly to the engine.
 - Local verification was expanded to cover engine startup, turn processing, save/load, serializability, and desktop-window startup.
+- The redundant parallel source trees under `src/ai/`, `src/engine/`, `src/ui/`, and `src/data/` were removed after verifying they had no imports in the active runtime.
+- The old compatibility re-export `src/ai_pnp/core/game_engine.py` was removed to keep a single engine path at `src/ai_pnp/engine/game_engine.py`.
+- The CLI loop and command parsing were moved out of `GameEngine` into `src/ai_pnp/ui/cli/runner.py`.
 
 ## Known issues
-- The repository contains parallel structure candidates outside `src/ai_pnp/`, which creates ambiguity about the canonical architecture.
 - Persistence is currently JSON based, while the documented MVP target says SQLite.
 - The live Ollama path is implemented, but an actual model response was not verifiable in this session because the local Ollama service was not reachable from the execution environment.
 - The current desktop UI runs on the main thread; a slow LLM response can block the window until the request returns.
 - No linter or dedicated build command was discoverable in the minimal inspected slice.
-- Older placeholder modules such as `content_loader.py`, `memory_service.py`, and `rules_engine.py` still exist locally but are not in the active runtime path.
+- Some internal placeholder modules such as `src/ai_pnp/services/content/content_loader.py` and `src/ai_pnp/services/rules/rules_engine.py` still exist locally but are not in the active runtime path.
 
 ## Current focus
-- Stabilize the canonical project structure around the new engine path.
 - Verify the live Ollama path on a machine where the local service and model are available.
 - Harden the desktop prototype without leaking game logic into the UI layer.
 - Deepen deterministic quest, memory, and campaign progression beyond the first mini-flow.
 - Keep documentation aligned with verified local state.
 
 ## Risks and uncertainties
-- It is not yet verified whether the non-`ai_pnp` folders under `src/` are legacy, experimental, or intended to remain.
 - The current implementation does not yet enforce structured AI state proposals versus engine-owned state updates.
 - Legal direction is documented, but no content review beyond the inspected starter files was performed.
 - No broad secret audit was performed beyond the minimal inspected file set.
