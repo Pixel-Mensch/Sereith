@@ -7,10 +7,11 @@ Relevant files: `ARCHITECTURE.md`, `PROJECT_STATE.md`, `src/ai_pnp/`, `src/ai/`,
 Expected outcome: One clearly preferred application path and explicit handling of parallel starter folders.
 Notes: Current entry point uses `src/ai_pnp/`, but parallel folders still exist.
 
-2. Replace placeholder narrator client with a local Ollama adapter.
+2. Replace the placeholder narrator client with a local model adapter.
 Status: Pending
 Relevant files: `src/ai_pnp/services/llm/narrator_client.py`, `src/ai_pnp/services/llm/prompt_builder.py`
 Expected outcome: Local model-backed narration with a stable adapter boundary.
+Notes: Ollama is the documented primary candidate, but the adapter boundary should remain model-agnostic.
 
 3. Move persistence toward the documented MVP storage direction.
 Status: Pending
@@ -22,8 +23,10 @@ Notes: Current verified state is JSON autosave only.
 Status: Pending
 Relevant files: `src/ai_pnp/core/game_engine.py`, `src/ai_pnp/services/*`, `src/ai_pnp/core/models/*`
 Expected outcome: Input -> rules -> prompt -> narration -> state update -> save.
+Notes: Keep engine-owned state updates separate from AI-generated narration.
 
 5. Expand tests around boot, persistence, and state transitions.
 Status: Pending
 Relevant files: `tests/`
 Expected outcome: Small reliable regression coverage for the prototype path.
+Notes: Current verified coverage is one smoke test.

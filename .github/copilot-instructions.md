@@ -5,5 +5,5 @@
 - Read only the smallest useful set of files first. Do not do a full repo scan by default.
 - Keep changes small and directly related to the task.
 - Update the control files after meaningful work.
-- Run the smallest relevant validation when a command is known.
+- Run the smallest relevant test, run, or build validation when a command is known.
 - Never add or expose secrets or local machine-only settings.

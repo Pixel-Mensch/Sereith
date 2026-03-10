@@ -17,6 +17,7 @@ The goal is small, reliable changes and clean handoffs.
 - Use `dev` as the default working branch. Treat `main` as the stable baseline branch.
 - Read only the task-relevant files first. Do not do a full repository scan by default.
 - Keep changes small and focused. Do not rewrite unrelated areas.
+- Keep commits small and logically scoped to the active task.
 - Separate documented target state from verified local file state.
 - Mark uncertainty instead of inventing facts.
 - Prefer extending the active `src/ai_pnp/` application path over creating new parallel structures.
@@ -27,6 +28,7 @@ The goal is small, reliable changes and clean handoffs.
 - Leave the repository handoff ready after every completed step.
 
 ## Testing and security
-- Run the smallest relevant validation before finishing when a command is known.
+- Run the smallest relevant test, run, or build validation before finishing when a command is known.
 - If validation was not run, say so explicitly.
 - Never commit secrets, tokens, or machine-local settings.
+- If a secret or sensitive artifact risk is found, document the risk without reproducing the value.
