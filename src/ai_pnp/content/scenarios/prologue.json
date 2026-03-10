@@ -1,0 +1,34 @@
+{
+  "scenes": [
+    {
+      "scene_id": "roadside_inn_intro",
+      "title": "Schankstube am Heerweg",
+      "location_name": "Schankstube an der Heerstrasse",
+      "description": "Du sitzt in einer kleinen Schankstube am Rand der alten Heerstrasse. Regen klopft gegen die Fensterlaeden, waehrend eine Wirtin Becher trocknet und drei Reisende im Halbdunkel tuscheln.",
+      "discover_flags": [
+        "inn_room_observed"
+      ],
+      "exits": {
+        "raus": "inn_front",
+        "hinaus": "inn_front",
+        "vor": "inn_front",
+        "tuer": "inn_front"
+      }
+    },
+    {
+      "scene_id": "inn_front",
+      "title": "Vor dem Gasthaus",
+      "location_name": "Vor dem Gasthaus",
+      "description": "Vor dem Gasthaus knirscht nasser Kies unter deinen Stiefeln. Eine schiefe Laterne wirft warmes Licht auf den Hof, waehrend jenseits der Strasse der Wind ueber die dunklen Felder streicht.",
+      "discover_flags": [
+        "inn_front_observed"
+      ],
+      "exits": {
+        "hinein": "roadside_inn_intro",
+        "rein": "roadside_inn_intro",
+        "gaststube": "roadside_inn_intro",
+        "zurueck": "roadside_inn_intro"
+      }
+    }
+  ]
+}
