@@ -5,7 +5,10 @@
       "title": "Der verschwundene Kurier",
       "status": "active",
       "summary": "Ein Kurier ist auf dem letzten Abschnitt der Heerstrasse verschwunden.",
-      "current_objective": "Finde im Gasthaus heraus, was ueber den Kurier bekannt ist.",
+      "objectives": [
+        "find_information_about_courier",
+        "investigate_roadside"
+      ],
       "progress_flags": []
     }
   ]

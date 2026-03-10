@@ -20,18 +20,23 @@ class PromptBuilder:
         target_scene: dict | None,
     ) -> str:
         recent = "\n".join(
-            f"- Aktion: {entry['action']} | Intent: {entry['intent']} | Szene: {entry['scene_id']} | Status: {entry['status']}"
+            (
+                f"- Aktion: {entry['player_action']} | Intent: {entry['interpretation']['intent']} | "
+                f"Szene: {entry['scene_id']} | Zeit: {entry['timestamp']}"
+            )
             for entry in state.turn_log[-3:]
         ) or "- Keine vorherigen Zuege."
         visible_npcs = self._format_visible_npcs(scene.get("npcs", []))
         quest_lines = "\n".join(
             (
-                f"- {quest.title} [{quest.status}] | Ziel: {quest.current_objective or '-'} | "
-                f"Fortschritt: {', '.join(quest.progress_flags) or '-'} | Zusammenfassung: {quest.summary}"
+                f"- {quest.title} [{quest.status}] | Ziele: {', '.join(quest.objectives) or '-'} | "
+                f"Fortschritt: {', '.join(quest.progress_flags) or '-'}"
             )
             for quest in state.active_quests
         ) or "- Keine aktiven Quests."
-        flags = ", ".join(state.world.discovered_flags) or "keine"
+        flags = ", ".join(state.world.discovered_flags[-5:]) or "keine"
+        facts = ", ".join(state.facts[-5:]) or "keine"
+        summary = state.session_summaries[-1]["summary_text"] if state.session_summaries else "keine"
         exits = ", ".join(exit_rule["label"] for exit_rule in scene.get("exits", [])) or "keine"
         style_rules = "\n".join(f"- {item}" for item in self.prompt_rules.get("style", []))
         constraints = "\n".join(f"- {item}" for item in self.prompt_rules.get("constraints", []))
@@ -52,7 +57,9 @@ class PromptBuilder:
             f"- Ort: {state.world.current_location_name}\n"
             f"- Tageszeit: {state.world.time_of_day}\n"
             f"- Beschreibung: {scene['description']}\n"
-            f"- Sichtbare NPCs: {visible_npcs}\n"
+            f"- Szeneobjekte: {', '.join(state.world.scene_objects) or 'keine'}\n"
+            f"- NPCs praesent: {visible_npcs}\n"
+            f"- Temporaere Szenenflags: {', '.join(state.world.temporary_scene_flags) or 'keine'}\n"
             f"- Verfuegbare Ausgaenge: {exits}\n\n"
             f"Spielerzustand:\n"
             f"- Name: {state.player.name}\n"
@@ -61,10 +68,13 @@ class PromptBuilder:
             f"- HP: {state.player.hp_current}/{state.player.hp_max}\n"
             f"- Inventar: {', '.join(state.player.inventory) or 'leer'}\n"
             f"- Skills: {', '.join(state.player.skills)}\n\n"
-            f"Questrelevanz:\n{quest_lines}\n\n"
-            f"Entdeckte Flags: {flags}\n"
+            f"Aktive Quests:\n{quest_lines}\n\n"
+            f"Wichtige Questprogress-Flags: {', '.join(state.quest_progress[-5:]) or 'keine'}\n"
+            f"Long-Term Facts: {facts}\n"
+            f"Entdeckte Informationen: {', '.join(state.discovered_information[-5:]) or 'keine'}\n"
+            f"Letzte Session Summary: {summary}\n"
             f"Letzte Narration: {state.last_narration or 'noch keine'}\n"
-            f"Vorherige Zuege:\n{recent}\n\n"
+            f"Short-Term Memory:\n{recent}\n\n"
             f"Interpretation:\n"
             f"- Intent: {interpretation.intent}\n"
             f"- Fokus: {interpretation.subject}\n"

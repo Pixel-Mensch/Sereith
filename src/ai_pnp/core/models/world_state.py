@@ -10,6 +10,9 @@ class WorldState(BaseModel):
     current_location_name: str = "Schankstube an der Heerstrasse"
     time_of_day: str = "Abend"
     discovered_flags: list[str] = field(default_factory=list)
+    scene_objects: list[str] = field(default_factory=list)
+    npc_present: list[str] = field(default_factory=list)
+    temporary_scene_flags: list[str] = field(default_factory=list)
 
     @classmethod
     def from_dict(cls, payload: dict | None) -> "WorldState":
@@ -23,4 +26,7 @@ class WorldState(BaseModel):
             ),
             time_of_day=payload.get("time_of_day", "Abend"),
             discovered_flags=list(payload.get("discovered_flags", [])),
+            scene_objects=list(payload.get("scene_objects", [])),
+            npc_present=list(payload.get("npc_present", [])),
+            temporary_scene_flags=list(payload.get("temporary_scene_flags", [])),
         )

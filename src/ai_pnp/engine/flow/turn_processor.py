@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import UTC, datetime
 
 
 @dataclass
@@ -18,6 +19,8 @@ class TurnProcessor:
         prompt_builder,
         narrator_client,
         state_updater,
+        memory_service,
+        session_summary_service,
         scene_repository,
         save_repository,
         autosave_enabled: bool = True,
@@ -26,6 +29,8 @@ class TurnProcessor:
         self.prompt_builder = prompt_builder
         self.narrator_client = narrator_client
         self.state_updater = state_updater
+        self.memory_service = memory_service
+        self.session_summary_service = session_summary_service
         self.scene_repository = scene_repository
         self.save_repository = save_repository
         self.autosave_enabled = autosave_enabled
@@ -64,6 +69,19 @@ class TurnProcessor:
             narration_result=narration_result,
             planned_effect=planned_effect,
         )
+        self.memory_service.record_turn(
+            state,
+            player_action=raw_action,
+            interpretation=interpretation,
+            narration=state.last_narration,
+            timestamp=datetime.now(UTC).isoformat(),
+        )
+        summary = self.session_summary_service.maybe_create_summary(state)
+        if summary and not narration_result.note:
+            narration_result.note = "Neue Sitzungssummary erstellt."
+        elif summary and narration_result.note:
+            narration_result.note = f"{narration_result.note} | Neue Sitzungssummary erstellt."
+
         if self.autosave_enabled:
             self.save_repository.autosave(state)
 

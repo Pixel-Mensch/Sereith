@@ -9,7 +9,7 @@ class Quest(BaseModel):
     title: str
     status: str = "active"
     summary: str = ""
-    current_objective: str = ""
+    objectives: list[str] = field(default_factory=list)
     progress_flags: list[str] = field(default_factory=list)
 
     @classmethod
@@ -20,6 +20,6 @@ class Quest(BaseModel):
             title=payload.get("title", "Unbenannte Quest"),
             status=payload.get("status", "active"),
             summary=payload.get("summary", ""),
-            current_objective=payload.get("current_objective", ""),
+            objectives=list(payload.get("objectives", [])),
             progress_flags=list(payload.get("progress_flags", [])),
         )

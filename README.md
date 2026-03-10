@@ -17,9 +17,10 @@ The actual rules, state, memory, and persistence live in the application core.
   - initial character and quest
   - four scenes for the first mini-flow
   - action interpretation with simple subject detection
-  - prompt building with scene, NPC, quest, and history context
+  - prompt building with scene, NPC, quest, short-term memory, long-term facts, and session summary context
   - Ollama-backed narration with safe fallback
   - JSON save/load and autosave
+  - scene memory, short-term memory, long-term memory, and session summaries
 
 ## Current direction
 
@@ -57,3 +58,4 @@ It can start with CLI, move to desktop later, and still support a web UI in the 
 - Current verified persistence is JSON save/load under `src/ai_pnp/data/saves/`.
 - SQLite remains the documented MVP target, not the current local implementation.
 - In the latest local validation run, the fallback narrator path was exercised because Ollama was not reachable from the environment.
+- The engine now exposes UI-ready methods for player status, active quests, current scene, and player-action processing.

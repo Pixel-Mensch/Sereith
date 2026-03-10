@@ -6,12 +6,14 @@
 - Added an Ollama-backed narrator path behind `NarratorClient` plus a safe fallback path when the local service or model is unavailable.
 - Expanded deterministic state progression for discovery flags, quest progress, scene transitions, and turn logging.
 - Expanded tests to cover turn processing, save/load, scene changes, and first clue progression.
+- Added a layered memory system with scene memory, short-term memory, long-term memory, NPC memory, and generated session summaries.
+- Extended the quest model and save/load flow so campaign-relevant state persists more cleanly.
 
 ## Current repo state
 - Canonical verified runtime path currently goes through `src/ai_pnp/engine/`.
 - `main.py` and `scripts/run_cli.py` can start the CLI path.
 - The CLI now supports a first playable inn -> outside -> clue flow.
-- Four focused tests exist and pass.
+- Six focused tests exist and pass.
 - Parallel folders exist under `src/` and still need an explicit structural decision.
 - Current persistence is JSON save/load, not SQLite yet.
 - `main` is the stable branch and `dev` is the current working branch.
@@ -25,7 +27,7 @@
 ## Recommended next action
 1. Decide how to handle the parallel `src/` folders and older placeholder modules.
 2. Verify the live Ollama path with a running local service and the configured model.
-3. Extend the mini-flow with branching reactions, follow-up consequences, and more quest-state assertions.
+3. Extend the mini-flow with branching reactions, follow-up consequences, and more campaign-memory retrieval logic.
 
 ## Relevant files
 - `AGENTS.md`
@@ -37,8 +39,13 @@
 - `pyproject.toml`
 - `src/ai_pnp/core/application.py`
 - `src/ai_pnp/core/app_config.py`
+- `src/ai_pnp/core/models/game_state.py`
+- `src/ai_pnp/core/models/world_state.py`
+- `src/ai_pnp/core/models/quest.py`
+- `src/ai_pnp/core/models/npc_memory.py`
 - `src/ai_pnp/engine/`
 - `src/ai_pnp/services/llm/`
+- `src/ai_pnp/services/memory/`
 - `src/ai_pnp/services/content/scene_repository.py`
 - `src/ai_pnp/services/content/quest_repository.py`
 - `src/ai_pnp/services/content/npc_repository.py`

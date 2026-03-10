@@ -13,11 +13,11 @@ Relevant files: `src/ai_pnp/services/llm/narrator_client.py`, `src/ai_pnp/servic
 Expected outcome: Confirmed real model narration from the local Ollama service without losing the safe fallback path.
 Notes: In the latest local validation run, the service was not reachable, so only the fallback path was verified.
 
-3. Deepen the deterministic engine path for actions and state progression.
+3. Deepen the deterministic engine path for campaign memory and quest progression.
 Status: Pending
-Relevant files: `src/ai_pnp/engine/flow/turn_processor.py`, `src/ai_pnp/engine/state/state_updater.py`, `src/ai_pnp/services/content/scene_repository.py`
-Expected outcome: Richer state updates, clearer scene transitions, and stronger engine-owned truth.
-Notes: The current scaffold supports the first inn/courier mini-flow and simple quest progress flags.
+Relevant files: `src/ai_pnp/engine/flow/turn_processor.py`, `src/ai_pnp/engine/state/state_updater.py`, `src/ai_pnp/services/memory/`, `src/ai_pnp/services/content/scene_repository.py`
+Expected outcome: Richer state updates, clearer campaign continuity, and stronger engine-owned truth.
+Notes: The current scaffold now has scene memory, short-term memory, long-term memory, and summary generation, but only for the first mini-flow.
 
 4. Move persistence toward the documented MVP storage direction.
 Status: Pending
@@ -25,11 +25,11 @@ Relevant files: `src/ai_pnp/services/storage/save_repository.py`, future `db/sql
 Expected outcome: SQLite-backed game state with clear save/load behavior.
 Notes: Current verified state is JSON save/load with slot naming via `save [name]` and `load [name]`.
 
-5. Expand tests around narrator failure modes, quest branching, and content regressions.
+5. Expand tests around narrator failure modes, memory retrieval quality, and quest branching.
 Status: Pending
 Relevant files: `tests/`
 Expected outcome: Small reliable regression coverage for the prototype path.
-Notes: Current verified coverage includes four focused engine tests.
+Notes: Current verified coverage includes six focused engine tests.
 
 6. Refresh the lightweight module maps after the runtime path change.
 Status: Pending

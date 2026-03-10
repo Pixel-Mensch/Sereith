@@ -18,9 +18,14 @@
 - `SceneRepository`, `QuestRepository`, and `NpcRepository` load the first playable mini-flow from JSON content files.
 - The playable scenario currently covers four scenes: `roadside_inn_intro`, `inn_common_room`, `inn_front`, and `roadside_clue`.
 - The narrator facade now supports an Ollama-backed path plus a safe local fallback path.
+- A multi-layer memory system now exists:
+  - scene memory in `WorldState`
+  - short-term memory in `turn_log`
+  - long-term memory in facts, discovered information, discovered locations, quest progress, and NPC memory
+  - generated session summaries after every 10 turns
 - JSON-based save and load support exists through `SaveRepository`.
 - `pyproject.toml` exists with a basic setuptools package definition for Python 3.11+.
-- `tests/test_engine_smoke.py` exists and currently covers turn processing, save/load, scene transitions, and first quest progress.
+- `tests/test_engine_smoke.py` exists and currently covers log capping, quest progress, NPC memory, session summaries, save/load, and scene-memory updates.
 - `docs/module-maps/` exists with initial module notes.
 - Additional parallel folders exist under `src/ai/`, `src/engine/`, `src/ui/`, and `src/data/`. Their role relative to `src/ai_pnp/` is not yet fully documented.
 - In the latest local validation run, the CLI worked and the Ollama fallback path was exercised because the local Ollama service was not reachable from this environment.
@@ -28,7 +33,7 @@
 ## Major areas or modules
 - `src/ai_pnp/core/`: application bootstrap plus core models for character, quest, world, and game state.
 - `src/ai_pnp/engine/`: active engine flow with game engine, action interpretation, turn processing, and state updates.
-- `src/ai_pnp/services/`: scene, quest, and NPC loading; Ollama/fallback narration; prompt building; and persistence.
+- `src/ai_pnp/services/`: scene, quest, and NPC loading; Ollama/fallback narration; memory services; prompt building; and persistence.
 - `src/ai_pnp/content/`: JSON world, scenario, NPC, quest, and prompt data for the first mini-flow.
 - `src/ai_pnp/ui/`: CLI wrapper plus placeholder desktop UI module.
 - `docs/module-maps/`: lightweight handwritten module summaries.
@@ -45,6 +50,7 @@
 - The first playable mini-flow now spans the inn, its common room, the front yard, and a first clue site.
 - Ollama integration was added behind `NarratorClient`, with safe fallback when the local service or model is unavailable.
 - Save/load, discovery flags, and quest progress are now covered by small automated tests.
+- Memory layers, NPC memory, session summaries, and stronger quest-state tracking are now wired into the active runtime and save system.
 
 ## Known issues
 - The repository contains parallel structure candidates outside `src/ai_pnp/`, which creates ambiguity about the canonical architecture.
@@ -57,7 +63,7 @@
 ## Current focus
 - Stabilize the canonical project structure around the new engine path.
 - Verify the live Ollama path on a machine where the local service and model are available.
-- Deepen deterministic quest and scene progression beyond the first mini-flow.
+- Deepen deterministic quest, memory, and campaign progression beyond the first mini-flow.
 - Keep documentation aligned with verified local state.
 
 ## Risks and uncertainties

@@ -30,6 +30,9 @@ class SceneRepository:
             current_location_name=scene["location_name"],
             time_of_day=self._world_seed.get("time_of_day", "Abend"),
             discovered_flags=[],
+            scene_objects=list(scene.get("scene_objects", [])),
+            npc_present=list(scene.get("npcs", [])),
+            temporary_scene_flags=[],
         )
 
     def get_enter_effect(self, scene_id: str) -> dict:

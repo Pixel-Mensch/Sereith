@@ -8,6 +8,8 @@ from ai_pnp.services.content.quest_repository import QuestRepository
 from ai_pnp.services.content.scene_repository import SceneRepository
 from ai_pnp.services.llm.narrator_client import NarratorClient
 from ai_pnp.services.llm.prompt_builder import PromptBuilder
+from ai_pnp.services.memory.memory_service import MemoryService
+from ai_pnp.services.memory.session_summary_service import SessionSummaryService
 from ai_pnp.services.storage.save_repository import SaveRepository
 
 
@@ -20,13 +22,17 @@ class Application:
         self.save_repository = SaveRepository()
         self.prompt_builder = PromptBuilder(self.npc_repository)
         self.narrator_client = NarratorClient(self.app_config)
+        self.memory_service = MemoryService()
+        self.session_summary_service = SessionSummaryService()
         self.action_interpreter = ActionInterpreter(self.scene_repository)
-        self.state_updater = StateUpdater(self.scene_repository)
+        self.state_updater = StateUpdater(self.scene_repository, self.memory_service)
         self.turn_processor = TurnProcessor(
             action_interpreter=self.action_interpreter,
             prompt_builder=self.prompt_builder,
             narrator_client=self.narrator_client,
             state_updater=self.state_updater,
+            memory_service=self.memory_service,
+            session_summary_service=self.session_summary_service,
             scene_repository=self.scene_repository,
             save_repository=self.save_repository,
             autosave_enabled=self.app_config.autosave,
