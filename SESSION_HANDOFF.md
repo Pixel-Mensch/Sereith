@@ -1,33 +1,30 @@
-# Session Handoff
+# SESSION_HANDOFF.md
 
-## What Was Just Done
-- Created the required control files for structured AI-driven development.
-- Added `.github/copilot-instructions.md`.
-- Added a minimal `.gitignore`.
-- Initialized Git so branch workflow can be standardized around `main` and `dev`.
+## Session summary
+- Verified the current local scaffold after recent user changes.
+- Fixed the immediate `src`-layout startup issue so `main.py`, `scripts/run_cli.py`, and tests can import `ai_pnp`.
+- Updated the control files to separate documented target architecture from verified local file state.
+- Prepared the repository for a clean baseline commit on `main`.
 
-## Current Repo State
-- Repository was empty before this setup.
-- No README, source files, test commands, build commands, or CI definitions are present yet.
-- Current setup is documentation-first and intentionally minimal.
-- The bootstrap commit is intended to exist on both `main` and `dev`; continue future work from `dev`.
+## Current repo state
+- Canonical verified runtime path currently goes through `src/ai_pnp/`.
+- A smoke test exists.
+- Parallel folders exist under `src/` and still need an explicit structural decision.
+- Current persistence is JSON autosave, not SQLite yet.
 
-## What Should Happen Next
-1. Define the project purpose and create `README.md`.
-2. Choose the actual stack or project structure.
-3. Add the first source/config files.
-4. Document validation commands once they exist.
+## Validation
+- `pytest -q`
+- `python main.py`
 
-## Relevant Files for the Next Session
-- `AGENTS.md`
-- `PROJECT_STATE.md`
-- `TASK_QUEUE.md`
-- `ARCHITECTURE.md`
-- `SESSION_HANDOFF.md`
-- `.github/copilot-instructions.md`
-- `.gitignore`
+## Recommended next action
+1. Decide how to handle the parallel `src/` folders and document the result.
+2. Replace the placeholder narrator client with a real Ollama-backed adapter.
+3. Introduce a deterministic state-update path owned by the engine before expanding the UI.
 
-## Warnings, Assumptions, and Caveats
-- Architecture details are placeholders based on an empty repository.
-- No tests or linters were run because none exist yet.
-- No secret scan beyond the minimal empty-repo inspection was performed.
+## Relevant files
+- `main.py`
+- `pyproject.toml`
+- `src/ai_pnp/`
+- `tests/test_smoke.py`
+- `tests/conftest.py`
+- `docs/module-maps/`

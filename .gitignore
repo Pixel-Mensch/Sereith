@@ -1,11 +1,15 @@
-# Local machine settings
-.claude/settings.local.json
-
-# Local secrets
+__pycache__/
+*.pyc
+.venv/
+venv/
 .env
 .env.*
-!.env.example
-
-# OS noise
-Thumbs.db
-.DS_Store
+*.sqlite3
+*.db
+dist/
+build/
+*.spec
+.pytest_cache/
+.mypy_cache/
+src/ai_pnp/data/saves/
+src/ai_pnp/data/runtime/

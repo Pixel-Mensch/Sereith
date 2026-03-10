@@ -1,0 +1,7 @@
+{
+  "project_name": "AI-PnP",
+  "language": "de",
+  "ui_mode": "cli",
+  "llm_provider": "placeholder",
+  "autosave": true
+}
