@@ -44,6 +44,7 @@ class Application:
             quest_repository=self.quest_repository,
             save_repository=self.save_repository,
             turn_processor=self.turn_processor,
+            npc_repository=self.npc_repository,
         )
 
     def run(self) -> None:

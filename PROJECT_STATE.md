@@ -16,7 +16,15 @@
 - `Application` currently reads `ui_mode` from `src/ai_pnp/data/config/app_config.json`.
 - The default local `ui_mode` is `desktop`.
 - A first `tkinter` desktop prototype now exists under `src/ai_pnp/ui/desktop/`.
-- The desktop prototype exposes story text, free-text action input, player status, active quests, and save/load/new-game controls.
+- The desktop prototype now exposes:
+  - structured scene and narration display
+  - free-text action input with fast re-focus
+  - player status with chapter, time, and location
+  - active quest overview
+  - inventory panel
+  - visible NPC/interactions panel
+  - recent action log
+  - save/load/new-game/refresh controls
 - The CLI loop now lives in `src/ai_pnp/ui/cli/runner.py`.
 - The CLI still supports `save`, `load`, `state`, and `quit` and remains reachable when `ui_mode` is set to `cli` or via `scripts/run_cli.py`.
 - A `TurnProcessor` exists and routes raw actions through action interpretation, prompt building, narrator selection, state updates, and autosave.
@@ -29,11 +37,11 @@
   - long-term memory in facts, discovered information, discovered locations, quest progress, and NPC memory
   - generated session summaries after every 10 turns
 - JSON-based save and load support exists through `SaveRepository`.
-- `GameEngine` now exposes UI-oriented methods for player status, quests, current scene, last narration, recent log, save/load, and turn processing.
+- `GameEngine` now exposes UI-oriented methods for player status, world status, quests, inventory, visible NPCs, current scene, last narration, recent log, save/load, and turn processing.
 - `pyproject.toml` exists with a basic setuptools package definition for Python 3.11+.
-- `tests/test_engine_smoke.py` exists and currently covers log capping, quest progress, NPC memory, session summaries, save/load, scene-memory updates, UI-friendly engine API behavior, application boot, and CLI-runner startup.
+- `tests/test_engine_smoke.py` exists and currently covers log capping, quest progress, NPC memory, session summaries, save/load, scene-memory updates, UI-friendly engine API behavior, application boot, CLI-runner startup, and desktop-window smoke checks.
 - `docs/module-maps/` exists with initial module notes.
-- In the latest local validation run, engine initialization, turn processing, save/load, `tkinter` window creation, and `MainWindow` startup all worked.
+- In the latest local validation run, engine initialization, turn processing, save/load, `tkinter` window creation, `MainWindow` startup, and a desktop action/save/load flow all worked.
 - In the latest local validation run, the Ollama fallback path was exercised because the local Ollama service was not reachable from this environment.
 
 ## Major areas or modules
@@ -62,6 +70,9 @@
 - The redundant parallel source trees under `src/ai/`, `src/engine/`, `src/ui/`, and `src/data/` were removed after verifying they had no imports in the active runtime.
 - The old compatibility re-export `src/ai_pnp/core/game_engine.py` was removed to keep a single engine path at `src/ai_pnp/engine/game_engine.py`.
 - The CLI loop and command parsing were moved out of `GameEngine` into `src/ai_pnp/ui/cli/runner.py`.
+- The desktop UI was upgraded from a bare prototype to a more usable play surface with clearer narration hierarchy, inventory, NPC/interactions, and recent-action panels.
+- The engine was extended minimally for UI display with `get_world_status()`, `get_inventory()`, and `get_visible_npcs()`.
+- Desktop-adjacent smoke coverage was added and the current local suite now passes with `12` tests.
 
 ## Known issues
 - Persistence is currently JSON based, while the documented MVP target says SQLite.
@@ -69,10 +80,11 @@
 - The current desktop UI runs on the main thread; a slow LLM response can block the window until the request returns.
 - No linter or dedicated build command was discoverable in the minimal inspected slice.
 - Some internal placeholder modules such as `src/ai_pnp/services/content/content_loader.py` and `src/ai_pnp/services/rules/rules_engine.py` still exist locally but are not in the active runtime path.
+- The desktop UI is still a single-window prototype; advanced navigation, inventory actions, and richer NPC drill-downs are not implemented yet.
 
 ## Current focus
 - Verify the live Ollama path on a machine where the local service and model are available.
-- Harden the desktop prototype without leaking game logic into the UI layer.
+- Harden the desktop prototype further without leaking game logic into the UI layer.
 - Deepen deterministic quest, memory, and campaign progression beyond the first mini-flow.
 - Keep documentation aligned with verified local state.
 

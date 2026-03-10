@@ -41,6 +41,7 @@
 - `src/ai_pnp/services/`: scene, quest, and NPC loading; memory and summary services; prompt building; Ollama/fallback narration; and persistence.
 - `src/ai_pnp/ui/cli/`: CLI runner wrapper.
 - `src/ai_pnp/ui/desktop/`: first `tkinter` desktop prototype over the engine API.
+  - `MainWindow` now renders story, character state, quests, inventory, visible NPCs, and recent actions.
 - `src/ai_pnp/content/`: JSON-backed world, scenario, NPC, quest, and prompt content.
 - `docs/module-maps/`: short handwritten module summaries.
 
@@ -51,6 +52,10 @@
   `scripts/run_cli.py` or `Application.run_cli()` -> `ui/cli/runner.py` -> engine methods (`process_action`, `save_game`, `load_game`, `render_state_summary`)
 - Current desktop flow:
   `MainWindow` -> engine UI methods (`get_*`, `process_player_action`, `save_game`, `load_game`) -> engine/services -> UI refresh
+  The desktop window currently uses:
+  - a dominant story panel with structured scene and narration rendering
+  - read-only side panels for character, quests, inventory, NPCs, and recent actions
+  - a status bar for feedback and error context
 - Current turn flow:
   player text input -> command handling or `TurnProcessor` -> `ActionInterpreter` -> content-backed action lookup -> `PromptBuilder` -> `NarratorClient` -> `StateUpdater` -> `MemoryService` -> `SessionSummaryService` -> autosave
 - Current persistence flow:
@@ -73,6 +78,7 @@
 - `src/ai_pnp/core/app_config.py`: loads the local runtime configuration from JSON.
 - `src/ai_pnp/core/models/npc_memory.py`: persistent per-NPC memory records.
 - `src/ai_pnp/engine/game_engine.py`: owns initial state creation, UI-friendly engine methods, and runtime orchestration without direct CLI I/O.
+  The current UI-facing getters include player status, world status, inventory, visible NPCs, current scene, last narration, recent log, and save/load methods.
 - `src/ai_pnp/engine/flow/turn_processor.py`: executes the per-turn pipeline.
 - `src/ai_pnp/engine/parsing/action_interpreter.py`: classifies raw player actions into coarse intents.
 - `src/ai_pnp/engine/state/state_updater.py`: applies deterministic state changes and turn logging.
@@ -86,8 +92,8 @@
 - `src/ai_pnp/services/storage/save_repository.py`: current JSON save/load implementation.
 - `src/ai_pnp/ui/cli/runner.py`: owns CLI command parsing, the interactive loop, and console I/O.
 - `src/ai_pnp/ui/desktop/app.py`: thin launcher for the desktop app.
-- `src/ai_pnp/ui/desktop/main_window.py`: first `tkinter` window with story, status, quests, and save/load controls.
-- `tests/test_engine_smoke.py`: current focused engine, memory, save/load, application-boot, and CLI-runner regression test set.
+- `src/ai_pnp/ui/desktop/main_window.py`: current `tkinter` desktop window with structured story presentation, status panels, inventory, NPCs, recent actions, and control buttons.
+- `tests/test_engine_smoke.py`: current focused engine, memory, save/load, application-boot, CLI-runner, and desktop-window smoke regression test set.
 
 ## Principles
 - UI must not own game logic.

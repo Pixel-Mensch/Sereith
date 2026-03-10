@@ -16,6 +16,7 @@ from ai_pnp.services.memory.memory_service import MemoryService
 from ai_pnp.services.memory.session_summary_service import SessionSummaryService
 from ai_pnp.services.storage.save_repository import SaveRepository
 from ai_pnp.ui.cli.runner import handle_cli_input, run
+from ai_pnp.ui.desktop.main_window import MainWindow
 
 
 def build_engine(tmp_path: Path) -> GameEngine:
@@ -41,6 +42,7 @@ def build_engine(tmp_path: Path) -> GameEngine:
         quest_repository=quest_repository,
         save_repository=save_repository,
         turn_processor=turn_processor,
+        npc_repository=npc_repository,
     )
 
 
@@ -123,10 +125,14 @@ def test_engine_ui_methods_return_simple_data(tmp_path: Path) -> None:
     assert result["ok"] is True
     assert result["narration"]
     assert isinstance(engine.get_player_status(), dict)
+    assert isinstance(engine.get_world_status(), dict)
     assert isinstance(engine.get_current_scene(), dict)
     assert isinstance(engine.get_active_quests(), list)
+    assert isinstance(engine.get_inventory(), list)
+    assert isinstance(engine.get_visible_npcs(), list)
     assert isinstance(engine.get_last_narration(), str)
     assert isinstance(engine.get_recent_log(), list)
+    assert engine.get_visible_npcs()[0]["name"] == "Selda"
 
 
 def test_save_and_load_api_are_ui_friendly_and_serializable(tmp_path: Path) -> None:
@@ -162,3 +168,47 @@ def test_cli_runner_is_importable_and_owns_the_loop(tmp_path: Path) -> None:
 
     assert outputs[0] == "AI-PnP gestartet"
     assert any("Spiel beendet." in line for line in outputs)
+
+
+def test_main_window_refresh_populates_panels(tmp_path: Path) -> None:
+    engine = build_engine(tmp_path)
+    window = MainWindow(engine)
+    window.root.withdraw()
+
+    try:
+        window.refresh_view()
+        story = window.story_text.get("1.0", "end-1c")
+        quests = window.quest_text.get("1.0", "end-1c")
+        inventory = window.inventory_text.get("1.0", "end-1c")
+        npcs = window.npc_text.get("1.0", "end-1c")
+
+        assert "Gasthaus am Heerweg" in story
+        assert "Der verschwundene Kurier" in quests
+        assert "Noch kein Inventar eingetragen." in inventory
+        assert "Selda" in npcs
+    finally:
+        window.root.destroy()
+
+
+def test_main_window_action_and_save_load_update_ui(tmp_path: Path) -> None:
+    engine = build_engine(tmp_path)
+    window = MainWindow(engine)
+    window.root.withdraw()
+
+    try:
+        window.action_entry.insert(0, "frage die wirtin nach dem kurier")
+        window._submit_action()
+
+        story = window.story_text.get("1.0", "end-1c")
+        log = window.log_text.get("1.0", "end-1c")
+        assert "Neueste Erzaehlung" in story
+        assert "frage die wirtin nach dem kurier" in log
+
+        window.save_name_var.set("desktop_slot")
+        window._save_game()
+        assert "gespeichert" in window.status_var.get().lower()
+
+        window._load_game()
+        assert "geladen" in window.status_var.get().lower()
+    finally:
+        window.root.destroy()

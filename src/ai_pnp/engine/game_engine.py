@@ -2,11 +2,19 @@ from ai_pnp.core.models.character import Character
 from ai_pnp.core.models.game_state import GameState
 
 class GameEngine:
-    def __init__(self, scene_repository, quest_repository, save_repository, turn_processor) -> None:
+    def __init__(
+        self,
+        scene_repository,
+        quest_repository,
+        save_repository,
+        turn_processor,
+        npc_repository=None,
+    ) -> None:
         self.scene_repository = scene_repository
         self.quest_repository = quest_repository
         self.save_repository = save_repository
         self.turn_processor = turn_processor
+        self.npc_repository = npc_repository
         self.state = self._create_initial_state()
 
     def _create_initial_state(self, save_name: str = "autosave") -> GameState:
@@ -45,6 +53,19 @@ class GameEngine:
     def get_active_quests(self) -> list[dict]:
         return [quest.to_dict() for quest in self.state.active_quests]
 
+    def get_inventory(self) -> list[str]:
+        return list(self.state.player.inventory)
+
+    def get_world_status(self) -> dict:
+        return {
+            "chapter": self.state.world.chapter,
+            "time_of_day": self.state.world.time_of_day,
+            "current_scene_id": self.state.world.current_scene_id,
+            "current_location_name": self.state.world.current_location_name,
+            "discovered_flags": list(self.state.world.discovered_flags),
+            "temporary_scene_flags": list(self.state.world.temporary_scene_flags),
+        }
+
     def get_current_scene(self) -> dict:
         scene = self.scene_repository.get_scene(self.state.world.current_scene_id)
         return {
@@ -56,6 +77,23 @@ class GameEngine:
             "npc_present": list(self.state.world.npc_present),
             "temporary_scene_flags": list(self.state.world.temporary_scene_flags),
         }
+
+    def get_visible_npcs(self) -> list[dict]:
+        if self.npc_repository is None or not self.state.world.npc_present:
+            return []
+
+        visible_npcs: list[dict] = []
+        for npc in self.npc_repository.get_many(self.state.world.npc_present):
+            memory = next((entry for entry in self.state.npc_memory if entry.npc_id == npc["npc_id"]), None)
+            relationship = next(
+                (entry for entry in self.state.npc_relationships if entry["npc_id"] == npc["npc_id"]),
+                None,
+            )
+            npc["attitude"] = memory.attitude if memory else relationship["attitude"] if relationship else "neutral"
+            npc["last_topic"] = memory.last_topic if memory else ""
+            npc["relationship_score"] = memory.relationship_score if memory else 0
+            visible_npcs.append(npc)
+        return visible_npcs
 
     def get_last_narration(self) -> str:
         return self.state.last_narration

@@ -11,7 +11,7 @@ Notes: In the latest local validation run, the service was not reachable, so onl
 Status: Pending
 Relevant files: `src/ai_pnp/ui/desktop/main_window.py`, `src/ai_pnp/services/llm/narrator_client.py`, `src/ai_pnp/engine/game_engine.py`
 Expected outcome: The desktop window remains responsive while the narrator request is running.
-Notes: The current verified desktop prototype is synchronous by design and can block during slow local-model responses.
+Notes: The current verified desktop UI now gives clearer feedback during actions, but narrator calls are still synchronous and can block during slow local-model responses.
 
 3. Deepen the deterministic engine path for campaign memory and quest progression.
 Status: Pending
@@ -23,7 +23,7 @@ Notes: The current scaffold now has scene memory, short-term memory, long-term m
 Status: Pending
 Relevant files: `tests/`
 Expected outcome: Small reliable regression coverage for the prototype path.
-Notes: Current verified coverage includes ten focused engine tests and startup smoke checks run manually.
+Notes: Current verified coverage includes twelve focused tests plus manual desktop start/action/save/load verification.
 
 5. Move persistence toward the documented MVP storage direction.
 Status: Pending
@@ -37,9 +37,21 @@ Relevant files: `docs/module-maps/`, `ARCHITECTURE.md`
 Expected outcome: Low-cost navigation docs that match the active engine structure.
 Notes: Module maps still reflect the earlier scaffold and do not yet cover the cleaned canonical `src/ai_pnp` layout.
 
+7. Decide how far the desktop UI should surface session summaries, facts, and NPC memory without overloading the screen.
+Status: Pending
+Relevant files: `src/ai_pnp/ui/desktop/main_window.py`, `src/ai_pnp/engine/game_engine.py`
+Expected outcome: A clearer plan for the next useful information panels after the current status/quest/inventory/log baseline.
+Notes: The current UI already exposes the most important immediate gameplay data, but long-term campaign context is still mostly hidden.
+
 ## Recently completed
 1. Stabilize the canonical source layout under `src/ai_pnp/`.
 Status: Completed
 Relevant files: `src/ai_pnp/`, `src/ai/`, `src/engine/`, `src/ui/`, `src/data/`, `src/ai_pnp/ui/cli/runner.py`, `src/ai_pnp/engine/game_engine.py`
 Expected outcome: One clearly preferred application path, no redundant top-level `src/` trees, and CLI interaction outside the engine core.
 Notes: Completed by removing unreferenced legacy placeholder trees and moving the CLI loop into the UI layer.
+
+2. Upgrade the first desktop UI from prototype to more usable play surface.
+Status: Completed
+Relevant files: `src/ai_pnp/ui/desktop/main_window.py`, `src/ai_pnp/engine/game_engine.py`, `tests/test_engine_smoke.py`
+Expected outcome: Better readability, clearer layout, more visible gameplay data, and light desktop smoke coverage.
+Notes: Completed with structured story presentation, character/quest/inventory/NPC/log panels, and UI-focused smoke validation.

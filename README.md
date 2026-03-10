@@ -12,10 +12,13 @@ The actual rules, state, memory, and persistence live in the application core.
   - desktop mode via `tkinter`
   - CLI mode when `ui_mode` is set to `cli`
 - The desktop prototype currently provides:
-  - scrollable story view
-  - free-text player input
-  - player and location status
+  - structured story view with scene header and latest narration
+  - free-text player input with direct resend focus
+  - character, chapter, time, and location status
   - active quest overview
+  - inventory panel
+  - visible NPC/interactions panel
+  - recent action log
   - `Neues Spiel`, `Speichern`, `Laden`, and `Aktualisieren`
 - Commands currently supported in the CLI:
   - `state`
@@ -74,8 +77,8 @@ pytest -q
 - JSON save/load works.
 - `GameState` remains serializable.
 - `tkinter` window creation works locally.
-- `MainWindow` can be instantiated and refreshed against the current engine.
-- `8` focused tests currently pass.
+- `MainWindow` can be instantiated, refreshed, and driven through an action plus save/load.
+- `12` focused tests currently pass.
 
 ## Notes
 
@@ -83,3 +86,4 @@ pytest -q
 - SQLite remains the documented MVP target, not the current local implementation.
 - In the latest local validation run, the fallback narrator path was exercised because Ollama was not reachable from the environment.
 - The desktop UI is intentionally thin: game logic stays in `GameEngine`, `TurnProcessor`, and related services.
+- The desktop UI still calls the narrator synchronously on the main thread; slow model responses can still block the window for now.

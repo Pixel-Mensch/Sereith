@@ -1,33 +1,38 @@
 # SESSION_HANDOFF.md
 
 ## Session summary
-- Verified the current structure instead of building on assumptions.
-- Removed the redundant top-level placeholder trees under `src/ai/`, `src/engine/`, `src/ui/`, and `src/data/` after confirming they were not imported by the active runtime or tests.
-- Removed the unused compatibility shim `src/ai_pnp/core/game_engine.py` so the engine has one canonical path at `src/ai_pnp/engine/game_engine.py`.
-- Moved the CLI loop and console command parsing out of `GameEngine` into `src/ai_pnp/ui/cli/runner.py`.
-- Updated `Application.run_cli()` to delegate to the CLI runner instead of hiding the loop inside the engine.
-- Expanded tests to cover application boot and CLI-runner startup on top of the existing engine regressions.
+- Verified the current engine, desktop UI, and tests locally before changing the UX layer.
+- Extended `GameEngine` minimally with `get_world_status()`, `get_inventory()`, and `get_visible_npcs()` so the UI can display more state without reading internals directly.
+- Rebuilt `src/ai_pnp/ui/desktop/main_window.py` into a more usable single-window desktop surface with clearer narration hierarchy, status, quests, inventory, visible NPCs, and a recent-action log.
+- Kept UI callbacks thin: they only trigger engine methods, manage widget state, and refresh the view.
+- Added desktop-focused smoke coverage and verified action, save, and load through the window against the local engine.
 
 ## Current repo state
 - `src/` now contains only `src/ai_pnp/` as the canonical application tree.
 - `main.py` still launches `Application.run()`, which starts the desktop app by default and can still fall back to CLI mode.
 - The CLI interaction path is now `scripts/run_cli.py` or `Application.run_cli()` -> `src/ai_pnp/ui/cli/runner.py` -> `GameEngine`.
 - `GameEngine` no longer owns a direct input loop or console output.
-- Ten focused tests exist and pass.
+- The desktop window now shows:
+  - structured scene and narration text
+  - character state
+  - quest state
+  - inventory
+  - visible NPC/interactions
+  - recent actions
+  - status feedback and save/load/new-game controls
+- Twelve focused tests exist and pass.
 - Current persistence is JSON save/load, not SQLite yet.
 - `main` is the stable branch and `dev` is the current working branch.
 
 ## Validation
 - `pytest -q`
-- `rg` import check confirming no active imports from the removed top-level `src/` placeholder trees
-- scripted boot check for `Application`
-- scripted CLI-runner check for `quit`
+- scripted desktop check covering `MainWindow` startup, one player action, save, and load
 - No build or linter command was discoverable in the minimal inspected slice.
 
 ## Recommended next action
 1. Verify the desktop and CLI narrator path with a running local Ollama service and the configured model.
 2. Move narrator requests off the desktop UI thread so the window stays responsive during slow responses.
-3. Decide whether the inactive internal placeholders inside `src/ai_pnp/services/` should be removed or turned into documented extension points.
+3. Decide how much long-term campaign context the desktop UI should expose next, for example session summaries, facts, or richer NPC memory panels.
 
 ## Relevant files
 - `AGENTS.md`
@@ -66,4 +71,5 @@
 - No broad secret review or full repository scan was performed during this audit.
 - `docs/module-maps/` was not refreshed in this session and may lag behind the active engine path.
 - The live Ollama integration is implemented, but the latest validation run only verified the fallback path because the local Ollama service was unreachable from this environment.
-- The desktop prototype is functional, but narrator calls still run synchronously on the UI thread.
+- The desktop UI is now more usable, but narrator calls still run synchronously on the UI thread.
+- Inventory interaction, richer NPC drill-downs, and session-summary panels are still not implemented.
