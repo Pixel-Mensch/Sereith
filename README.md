@@ -15,10 +15,10 @@ The actual rules, state, memory, and persistence live in the application core.
   - `quit`
 - The current scaffold contains:
   - initial character and quest
-  - two scenes
-  - action interpretation
-  - prompt building
-  - placeholder narration
+  - four scenes for the first mini-flow
+  - action interpretation with simple subject detection
+  - prompt building with scene, NPC, quest, and history context
+  - Ollama-backed narration with safe fallback
   - JSON save/load and autosave
 
 ## Current direction
@@ -31,6 +31,15 @@ while avoiding direct use of protected setting IP.
 ```python
 python main.py
 ```
+
+## Ollama
+
+- Default config lives in `src/ai_pnp/data/config/app_config.json`
+- Current local narrator config:
+  - `llm_provider = "ollama"`
+  - `ollama_model = "qwen2.5:7b"`
+  - `ollama_host = "http://localhost:11434"`
+- If Ollama is not running or the model is missing, the CLI falls back to a local placeholder narrator and keeps the game running.
 
 ## Test
 
@@ -47,3 +56,4 @@ It can start with CLI, move to desktop later, and still support a web UI in the 
 
 - Current verified persistence is JSON save/load under `src/ai_pnp/data/saves/`.
 - SQLite remains the documented MVP target, not the current local implementation.
+- In the latest local validation run, the fallback narrator path was exercised because Ollama was not reachable from the environment.

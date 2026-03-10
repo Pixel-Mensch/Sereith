@@ -12,7 +12,7 @@ class GameState(BaseModel):
     player: Character = field(default_factory=Character)
     world: WorldState = field(default_factory=WorldState)
     active_quests: list[Quest] = field(default_factory=list)
-    turn_log: list[dict[str, str]] = field(default_factory=list)
+    turn_log: list[dict[str, object]] = field(default_factory=list)
     last_narration: str = ""
     status_message: str = ""
 

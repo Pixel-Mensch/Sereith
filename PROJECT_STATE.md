@@ -14,19 +14,22 @@
 - `main.py` starts the CLI application through `ai_pnp.core.application`.
 - The active runtime path is `main.py` -> `Application` -> `ai_pnp.engine.game_engine.GameEngine`.
 - A CLI loop exists with `save`, `load`, `state`, and `quit` commands.
-- A `TurnProcessor` exists and routes raw actions through action interpretation, prompt building, placeholder narration, state updates, and autosave.
-- A `SceneRepository` loads two starter scenes from JSON content files.
+- A `TurnProcessor` exists and routes raw actions through action interpretation, prompt building, narrator selection, state updates, and autosave.
+- `SceneRepository`, `QuestRepository`, and `NpcRepository` load the first playable mini-flow from JSON content files.
+- The playable scenario currently covers four scenes: `roadside_inn_intro`, `inn_common_room`, `inn_front`, and `roadside_clue`.
+- The narrator facade now supports an Ollama-backed path plus a safe local fallback path.
 - JSON-based save and load support exists through `SaveRepository`.
 - `pyproject.toml` exists with a basic setuptools package definition for Python 3.11+.
-- `tests/test_engine_smoke.py` exists and verifies that one turn can be processed.
+- `tests/test_engine_smoke.py` exists and currently covers turn processing, save/load, scene transitions, and first quest progress.
 - `docs/module-maps/` exists with initial module notes.
 - Additional parallel folders exist under `src/ai/`, `src/engine/`, `src/ui/`, and `src/data/`. Their role relative to `src/ai_pnp/` is not yet fully documented.
+- In the latest local validation run, the CLI worked and the Ollama fallback path was exercised because the local Ollama service was not reachable from this environment.
 
 ## Major areas or modules
 - `src/ai_pnp/core/`: application bootstrap plus core models for character, quest, world, and game state.
 - `src/ai_pnp/engine/`: active engine flow with game engine, action interpretation, turn processing, and state updates.
-- `src/ai_pnp/services/`: scene loading, narration adapter boundary, prompt building, and persistence.
-- `src/ai_pnp/content/`: JSON world and scenario data for the starter scenes.
+- `src/ai_pnp/services/`: scene, quest, and NPC loading; Ollama/fallback narration; prompt building; and persistence.
+- `src/ai_pnp/content/`: JSON world, scenario, NPC, quest, and prompt data for the first mini-flow.
 - `src/ai_pnp/ui/`: CLI wrapper plus placeholder desktop UI module.
 - `docs/module-maps/`: lightweight handwritten module summaries.
 - Parallel starter areas also exist under `src/ai/`, `src/engine/`, `src/ui/`, and `src/data/`.
@@ -39,19 +42,22 @@
 - Control-file audit refreshed the documented repo state against the currently verified local files.
 - Engine-first runtime scaffold added under `src/ai_pnp/engine/`.
 - The starter world now has two JSON-backed scenes, a first turn pipeline, and JSON save/load support.
+- The first playable mini-flow now spans the inn, its common room, the front yard, and a first clue site.
+- Ollama integration was added behind `NarratorClient`, with safe fallback when the local service or model is unavailable.
+- Save/load, discovery flags, and quest progress are now covered by small automated tests.
 
 ## Known issues
 - The repository contains parallel structure candidates outside `src/ai_pnp/`, which creates ambiguity about the canonical architecture.
 - Persistence is currently JSON based, while the documented MVP target says SQLite.
-- The narrator client is still a placeholder and not connected to Ollama or another model backend.
+- The live Ollama path is implemented, but an actual model response was not verifiable in this session because the local Ollama service was not reachable from the execution environment.
 - No real desktop or web UI exists yet.
 - No linter or dedicated build command was discoverable in the minimal inspected slice.
 - Older placeholder modules such as `content_loader.py`, `memory_service.py`, and `rules_engine.py` still exist locally but are not in the active runtime path.
 
 ## Current focus
 - Stabilize the canonical project structure around the new engine path.
-- Replace placeholder narration with a real local-model adapter.
-- Deepen deterministic state progression beyond the first scaffold.
+- Verify the live Ollama path on a machine where the local service and model are available.
+- Deepen deterministic quest and scene progression beyond the first mini-flow.
 - Keep documentation aligned with verified local state.
 
 ## Risks and uncertainties

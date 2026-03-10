@@ -6,6 +6,7 @@ class ActionInterpretation:
     intent: str
     raw_action: str
     normalized_action: str
+    subject: str = "default"
     target_scene_id: str | None = None
     matched_keywords: list[str] = field(default_factory=list)
 
@@ -21,10 +22,17 @@ class ActionInterpreter:
         target_scene_id: str | None = None
 
         keyword_groups = {
-            "observe": ["observe", "untersuche", "beobachte", "schaue", "mustere", "betrachte"],
-            "talk": ["rede", "sprich", "frage", "unterhalte", "sage"],
+            "observe": ["untersuche", "beobachte", "schaue", "mustere", "betrachte", "sieh", "pruefe"],
+            "talk": ["rede", "sprich", "frage", "unterhalte", "sage", "erkundige"],
             "stealth": ["schleiche", "verstecke", "ducke", "verberge"],
-            "move": ["gehe", "geh", "verlasse", "trete", "raus", "hinaus", "hinein", "betrete"],
+            "move": ["gehe", "geh", "verlasse", "trete", "raus", "hinaus", "hinein", "betrete", "folge"],
+        }
+
+        subject_groups = {
+            "innkeeper": ["wirtin", "wirt", "theke"],
+            "strangers": ["fremde", "reisende", "gaeste", "reisender"],
+            "courier": ["kurier", "bote"],
+            "clue": ["spur", "spuren", "hinweis", "abdruck", "schlamm", "faden"],
         }
 
         for candidate_intent, keywords in keyword_groups.items():
@@ -34,6 +42,19 @@ class ActionInterpreter:
                 matched_keywords = hits
                 break
 
+        subject = "default"
+        for candidate_subject, keywords in subject_groups.items():
+            if any(keyword in normalized for keyword in keywords):
+                subject = candidate_subject
+                break
+
+        if subject == "clue" and intent == "observe":
+            target_scene_id = self.scene_repository.resolve_action_target(
+                current_scene_id,
+                intent,
+                subject,
+            )
+
         if intent == "move":
             target_scene_id = self.scene_repository.resolve_move_target(current_scene_id, normalized)
 
@@ -41,6 +62,7 @@ class ActionInterpreter:
             intent=intent,
             raw_action=raw_action,
             normalized_action=normalized,
+            subject=subject,
             target_scene_id=target_scene_id,
             matched_keywords=matched_keywords,
         )

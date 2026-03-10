@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from ai_pnp.core.models.base import BaseModel
 
@@ -9,6 +9,8 @@ class Quest(BaseModel):
     title: str
     status: str = "active"
     summary: str = ""
+    current_objective: str = ""
+    progress_flags: list[str] = field(default_factory=list)
 
     @classmethod
     def from_dict(cls, payload: dict | None) -> "Quest":
@@ -18,4 +20,6 @@ class Quest(BaseModel):
             title=payload.get("title", "Unbenannte Quest"),
             status=payload.get("status", "active"),
             summary=payload.get("summary", ""),
+            current_objective=payload.get("current_objective", ""),
+            progress_flags=list(payload.get("progress_flags", [])),
         )

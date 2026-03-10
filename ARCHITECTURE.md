@@ -13,8 +13,11 @@
 - Core package: `src/ai_pnp/`
 - Main services currently wired into the application:
   - `services/content/scene_repository.py`
+  - `services/content/quest_repository.py`
+  - `services/content/npc_repository.py`
   - `services/storage/save_repository.py`
   - `services/llm/narrator_client.py`
+  - `services/llm/ollama_client.py`
   - `services/llm/prompt_builder.py`
 - Active engine modules currently wired into the application:
   - `engine/game_engine.py`
@@ -25,41 +28,49 @@
 - Current persistence path: JSON autosave under `src/ai_pnp/data/saves/`
 
 ## Verified modules
-- `src/ai_pnp/core/`: application bootstrap and dataclass-based core models.
+- `src/ai_pnp/core/`: application bootstrap, config loading, and dataclass-based core models.
 - `src/ai_pnp/core/models/`: character, quest, world state, and game state models.
 - `src/ai_pnp/engine/`: active engine flow for commands, interpretation, turn processing, and state updates.
-- `src/ai_pnp/services/`: scene loading, prompt building, narration boundary, and persistence.
+- `src/ai_pnp/services/`: scene, quest, and NPC loading; prompt building; Ollama/fallback narration; and persistence.
 - `src/ai_pnp/ui/cli/`: CLI runner wrapper.
 - `src/ai_pnp/ui/desktop/`: placeholder desktop app module.
-- `src/ai_pnp/content/`: JSON-backed starter world and scenario content.
+- `src/ai_pnp/content/`: JSON-backed world, scenario, NPC, quest, and prompt content.
 - `docs/module-maps/`: short handwritten module summaries.
 
 ## Important flows
 - Current startup flow:
-  `main.py` -> `Application` -> repositories and engine services -> `GameEngine.run_cli()`
+  `main.py` -> `Application` -> config + repositories + engine services -> `GameEngine.run_cli()`
 - Current turn flow:
-  player text input -> command handling or `TurnProcessor` -> `ActionInterpreter` -> `PromptBuilder` -> `NarratorClient` -> `StateUpdater` -> autosave
+  player text input -> command handling or `TurnProcessor` -> `ActionInterpreter` -> content-backed action lookup -> `PromptBuilder` -> `NarratorClient` -> `StateUpdater` -> autosave
 - Current persistence flow:
   `SaveRepository.save()` and `autosave()` write JSON save data under `src/ai_pnp/data/saves/`
+- Current narrator flow:
+  `NarratorClient` chooses `ollama` or fallback -> `OllamaClient` calls `/api/generate` when enabled -> failures become non-fatal fallback narration
 
 ## Verified ambiguities
 - Parallel top-level folders also exist under `src/ai/`, `src/engine/`, `src/ui/`, and `src/data/`.
 - The current inspected entry path does not use those folders directly.
 - Until documented otherwise, treat `src/ai_pnp/` as the canonical application path and the parallel folders as unresolved structure.
 - Older local placeholder modules such as `content_loader.py`, `memory_service.py`, and `rules_engine.py` remain present but are not part of the active runtime path.
+- The live Ollama provider path is implemented, but successful model output was not verifiable in this session because the local service was unreachable.
 
 ## Important files and current role
 - `main.py`: root CLI entry point with local `src` path bootstrap.
 - `pyproject.toml`: minimal Python packaging metadata for the `src` layout.
 - `scripts/run_cli.py`: alternate CLI launcher with the same local import bootstrap.
-- `src/ai_pnp/core/application.py`: wires the current repositories and engine services into the runtime.
+- `src/ai_pnp/core/application.py`: wires config, repositories, narrator, and engine services into the runtime.
+- `src/ai_pnp/core/app_config.py`: loads the local runtime configuration from JSON.
 - `src/ai_pnp/engine/game_engine.py`: owns CLI command handling, initial state creation, and runtime orchestration.
 - `src/ai_pnp/engine/flow/turn_processor.py`: executes the per-turn pipeline.
 - `src/ai_pnp/engine/parsing/action_interpreter.py`: classifies raw player actions into coarse intents.
 - `src/ai_pnp/engine/state/state_updater.py`: applies deterministic state changes and turn logging.
-- `src/ai_pnp/services/content/scene_repository.py`: loads the starter world and scenes from JSON.
+- `src/ai_pnp/services/content/scene_repository.py`: loads scenes, exits, and action effects from JSON.
+- `src/ai_pnp/services/content/quest_repository.py`: loads the initial quest state from JSON.
+- `src/ai_pnp/services/content/npc_repository.py`: loads visible NPC context from JSON.
+- `src/ai_pnp/services/llm/ollama_client.py`: encapsulates the local Ollama HTTP call.
+- `src/ai_pnp/services/llm/narrator_client.py`: narrator facade with provider selection and fallback handling.
 - `src/ai_pnp/services/storage/save_repository.py`: current JSON save/load implementation.
-- `tests/test_engine_smoke.py`: current minimal engine smoke test.
+- `tests/test_engine_smoke.py`: current focused engine regression test set.
 
 ## Principles
 - UI must not own game logic.

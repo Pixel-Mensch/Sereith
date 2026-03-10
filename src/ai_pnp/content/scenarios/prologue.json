@@ -2,32 +2,256 @@
   "scenes": [
     {
       "scene_id": "roadside_inn_intro",
-      "title": "Schankstube am Heerweg",
-      "location_name": "Schankstube an der Heerstrasse",
-      "description": "Du sitzt in einer kleinen Schankstube am Rand der alten Heerstrasse. Regen klopft gegen die Fensterlaeden, waehrend eine Wirtin Becher trocknet und drei Reisende im Halbdunkel tuscheln.",
-      "discover_flags": [
-        "inn_room_observed"
+      "title": "Gasthaus am Heerweg",
+      "location_name": "Eingang des Gasthauses",
+      "description": "Du trittst in ein niedriges Gasthaus am Rand der alten Heerstrasse. Nasse Maentel dampfen an Holzhaken, die Luft riecht nach Suppe und Regen, und zwischen einer nervoesen Wirtin und drei schweigsamen Fremden haengt ein Geruecht, das keiner laut aussprechen will.",
+      "npcs": ["innkeeper", "stranger_hunter", "stranger_scribe", "stranger_guard"],
+      "exits": [
+        {
+          "label": "tiefer in den Schankraum",
+          "target_scene_id": "inn_common_room",
+          "keywords": ["schankraum", "gastraum", "theke", "hinein", "innen"]
+        },
+        {
+          "label": "vor das Gasthaus",
+          "target_scene_id": "inn_front",
+          "keywords": ["raus", "hinaus", "vor", "vor die tuer", "hof", "gasthaus"]
+        }
       ],
-      "exits": {
-        "raus": "inn_front",
-        "hinaus": "inn_front",
-        "vor": "inn_front",
-        "tuer": "inn_front"
+      "action_effects": {
+        "observe": {
+          "default": {
+            "discovered_flags": ["noticed_inn_tension"],
+            "status_message": "Du praegst dir die gespannte Stimmung im Gasthaus ein.",
+            "prompt_hint": "Zeige die nervoese Wirtin, die drei Fremden und die spuerbare Spannung im Raum.",
+            "fallback_narration": "Zwischen klappernden Bechern und geduckten Stimmen wird deutlich, dass hier mehr als nur Regenwetter auf den Herzen liegt."
+          },
+          "strangers": {
+            "discovered_flags": ["observed_strangers"],
+            "quest_updates": [
+              {
+                "quest_id": "missing_courier",
+                "progress_flags": ["observed_strangers"],
+                "summary_append": "Die drei Fremden beobachten den Eingang, als warteten sie auf schlechte Nachrichten."
+              }
+            ],
+            "status_message": "Du musterest die drei Fremden genauer.",
+            "prompt_hint": "Beschreibe die Fremden als auffaellig aufmerksam und nicht ganz entspannt.",
+            "fallback_narration": "Einer der Fremden trommelt mit zwei Fingern auf den Tisch, waehrend ein anderer immer wieder zum Eingang sieht."
+          }
+        },
+        "talk": {
+          "innkeeper": {
+            "discovered_flags": ["questioned_innkeeper", "heard_about_courier", "courier_last_seen_outside"],
+            "quest_updates": [
+              {
+                "quest_id": "missing_courier",
+                "progress_flags": ["heard_about_courier", "questioned_innkeeper"],
+                "current_objective": "Untersuche den Vorplatz vor dem Gasthaus.",
+                "summary_append": "Die Wirtin berichtet, dass der verschwundene Kurier zuletzt draussen vor dem Gasthaus gesehen wurde."
+              }
+            ],
+            "status_message": "Die Wirtin berichtet dir nervoes vom verschwundenen Kurier.",
+            "prompt_hint": "Die Wirtin soll bestaetigen, dass der Kurier zuletzt draussen vor dem Gasthaus gesehen wurde.",
+            "fallback_narration": "Mit gesenkter Stimme erklaert die Wirtin, der Kurier sei zuletzt draussen an der Strasse gesehen worden, kurz bevor der Regen richtig einsetzte."
+          },
+          "courier": {
+            "discovered_flags": ["questioned_innkeeper", "heard_about_courier", "courier_last_seen_outside"],
+            "quest_updates": [
+              {
+                "quest_id": "missing_courier",
+                "progress_flags": ["heard_about_courier", "questioned_innkeeper"],
+                "current_objective": "Untersuche den Vorplatz vor dem Gasthaus.",
+                "summary_append": "Die Wirtin berichtet, dass der verschwundene Kurier zuletzt draussen vor dem Gasthaus gesehen wurde."
+              }
+            ],
+            "status_message": "Beim Thema Kurier rueckt die Wirtin endlich mit Informationen heraus.",
+            "prompt_hint": "Das Gespraech ueber den Kurier soll die Spur nach draussen lenken.",
+            "fallback_narration": "Auf deine Frage hin presst die Wirtin die Lippen zusammen und deutet schliesslich zur Tuer: Draussen sei der Kurier zuletzt gesehen worden."
+          }
+        }
+      }
+    },
+    {
+      "scene_id": "inn_common_room",
+      "title": "Schankraum",
+      "location_name": "Schankraum des Gasthauses",
+      "description": "Zwischen den Tischen des Schankraums knistert das Feuer im Kamin. Die Wirtin hat die Theke fest im Blick, waehrend die drei Fremden ihre Becher zu langsam heben, um wirklich entspannt zu wirken.",
+      "npcs": ["innkeeper", "stranger_hunter", "stranger_scribe", "stranger_guard"],
+      "exits": [
+        {
+          "label": "zum Eingang",
+          "target_scene_id": "roadside_inn_intro",
+          "keywords": ["eingang", "vorne", "tuer"]
+        },
+        {
+          "label": "vor das Gasthaus",
+          "target_scene_id": "inn_front",
+          "keywords": ["raus", "hinaus", "vor", "hof", "gasthaus"]
+        }
+      ],
+      "action_effects": {
+        "observe": {
+          "default": {
+            "discovered_flags": ["observed_common_room"],
+            "status_message": "Du nimmst die Wirtin, das Feuer und die Fremden genauer wahr.",
+            "prompt_hint": "Halte die Wirtin nervoes und die Fremden wachsam.",
+            "fallback_narration": "Das Kaminlicht gibt der Stube Waerme, aber nicht Ruhe; jeder Blick scheint zu lang auf der Tuer zu liegen."
+          },
+          "strangers": {
+            "discovered_flags": ["observed_strangers"],
+            "quest_updates": [
+              {
+                "quest_id": "missing_courier",
+                "progress_flags": ["observed_strangers"],
+                "summary_append": "Die Fremden tauschen unruhige Blicke und scheinen mehr ueber den Abend zu wissen, als sie sagen."
+              }
+            ],
+            "status_message": "Du fixierst die Fremden und notierst dir ihre Reaktionen.",
+            "prompt_hint": "Die Fremden sollen nervoes wirken und immer wieder zur Tuer oder zum Fenster schauen.",
+            "fallback_narration": "Als dein Blick auf ihnen ruht, verstummt ihr leises Tuscheln fuers erste; der breiteste von ihnen streicht unwillkuerlich ueber eine nasse Lederfalte an seinem Mantel."
+          }
+        },
+        "talk": {
+          "innkeeper": {
+            "discovered_flags": ["questioned_innkeeper", "heard_about_courier", "courier_last_seen_outside"],
+            "quest_updates": [
+              {
+                "quest_id": "missing_courier",
+                "progress_flags": ["heard_about_courier", "questioned_innkeeper"],
+                "current_objective": "Untersuche den Vorplatz vor dem Gasthaus.",
+                "summary_append": "Die Wirtin berichtet, dass der verschwundene Kurier zuletzt draussen vor dem Gasthaus gesehen wurde."
+              }
+            ],
+            "status_message": "Die Wirtin spricht endlich offen ueber den Kurier.",
+            "prompt_hint": "Die Wirtin soll bestaetigen, dass der Kurier draussen vor dem Gasthaus verschwand.",
+            "fallback_narration": "Die Wirtin beugt sich vor und gesteht, dass der Kurier nur wenige Schritte vor dem Gasthaus vom Regen verschluckt wurde und nie zurueckkam."
+          },
+          "strangers": {
+            "discovered_flags": ["heard_stranger_rumor"],
+            "quest_updates": [
+              {
+                "quest_id": "missing_courier",
+                "progress_flags": ["heard_stranger_rumor"],
+                "summary_append": "Einer der Fremden murmelt, draussen seien im Schlamm noch Spuren zu sehen gewesen."
+              }
+            ],
+            "status_message": "Ein Fremder laesst eine unklare Bemerkung ueber Spuren draussen fallen.",
+            "prompt_hint": "Die Fremden sollen andeuten, dass vor der Tuer etwas im Schlamm zurueckblieb.",
+            "fallback_narration": "Nach einem zoegernden Austausch murmelt einer der Fremden, draussen vor dem Haus haetten selbst im Regen noch seltsame Spuren gelegen."
+          },
+          "courier": {
+            "discovered_flags": ["heard_about_courier"],
+            "quest_updates": [
+              {
+                "quest_id": "missing_courier",
+                "progress_flags": ["heard_about_courier"],
+                "summary_append": "Sobald der Kurier erwaehnt wird, kippt die Stimmung im Raum merklich."
+              }
+            ],
+            "status_message": "Das Wort 'Kurier' laesst die Stimmung im Schankraum kippen.",
+            "prompt_hint": "Die Erwaehnung des Kuriers soll den ganzen Raum anspannen.",
+            "fallback_narration": "Das Wort 'Kurier' legt sich wie ein kalter Zug ueber die Tische; selbst das Knistern des Feuers wirkt ploetzlich zu laut."
+          }
+        }
       }
     },
     {
       "scene_id": "inn_front",
       "title": "Vor dem Gasthaus",
       "location_name": "Vor dem Gasthaus",
-      "description": "Vor dem Gasthaus knirscht nasser Kies unter deinen Stiefeln. Eine schiefe Laterne wirft warmes Licht auf den Hof, waehrend jenseits der Strasse der Wind ueber die dunklen Felder streicht.",
-      "discover_flags": [
-        "inn_front_observed"
+      "description": "Vor dem Gasthaus knirscht nasser Kies unter deinen Stiefeln. Eine schiefe Laterne wirft warmes Licht auf den Hof, und zwischen Wasserpfuetzen zieht sich eine dunkle Spur am Rand der Heerstrasse entlang.",
+      "npcs": [],
+      "enter_effect": {
+        "discovered_flags": ["went_outside"],
+        "status_message": "Du trittst hinaus vor das Gasthaus."
+      },
+      "exits": [
+        {
+          "label": "zurueck in den Schankraum",
+          "target_scene_id": "inn_common_room",
+          "keywords": ["hinein", "rein", "gasthaus", "schankraum", "zurueck"]
+        },
+        {
+          "label": "den Spuren folgen",
+          "target_scene_id": "roadside_clue",
+          "keywords": ["spur", "spuren", "hinweis", "boden", "schlamm"]
+        }
       ],
-      "exits": {
-        "hinein": "roadside_inn_intro",
-        "rein": "roadside_inn_intro",
-        "gaststube": "roadside_inn_intro",
-        "zurueck": "roadside_inn_intro"
+      "action_effects": {
+        "observe": {
+          "default": {
+            "discovered_flags": ["inn_front_observed"],
+            "status_message": "Du begutachtest den nassen Vorplatz.",
+            "prompt_hint": "Beschreibe die Laterne, den Regen und die dunkle Spur am Rand des Hofes.",
+            "fallback_narration": "Im Schein der Laterne hebt sich im nassen Kies eine dunklere Linie ab, als haette etwas Schweres hier geschliffen oder kurz innegehalten."
+          },
+          "clue": {
+            "discovered_flags": ["found_first_clue"],
+            "quest_updates": [
+              {
+                "quest_id": "missing_courier",
+                "progress_flags": ["found_first_clue"],
+                "current_objective": "Entscheide, wem du im Gasthaus von dem Hinweis berichten willst.",
+                "summary_append": "Vor dem Gasthaus findest du einen zerrissenen Lederfaden und Spuren eines abrupten Handgemenges."
+              }
+            ],
+            "target_scene_id": "roadside_clue",
+            "status_message": "Du gehst der Spur bis an den Rand der Strasse nach.",
+            "prompt_hint": "Fuehre die Szene dichter an die Spuren heran und mache den ersten Hinweis greifbar.",
+            "fallback_narration": "Du folgst der dunklen Spur ein paar Schritte weiter, bis der Hof in offenen Strassenschlamm uebergeht."
+          }
+        }
+      }
+    },
+    {
+      "scene_id": "roadside_clue",
+      "title": "Spur am Wegesrand",
+      "location_name": "Am Rand der Heerstrasse",
+      "description": "Nur wenige Schritte vor dem Gasthaus kniet der Abend im Schlamm. Zwischen Hufabdruecken und Regenrinnen liegt ein zerrissener Lederfaden, dazu ein tiefer Abdruck, als waere hier jemand im Kampf aus dem Schritt geraten.",
+      "npcs": [],
+      "enter_effect": {
+        "discovered_flags": ["clue_site_reached"],
+        "status_message": "Du erreichst den Ort, an dem die Spur deutlich wird."
+      },
+      "exits": [
+        {
+          "label": "zurueck vor das Gasthaus",
+          "target_scene_id": "inn_front",
+          "keywords": ["zurueck", "gasthaus", "hof", "laterne"]
+        }
+      ],
+      "action_effects": {
+        "observe": {
+          "default": {
+            "discovered_flags": ["found_first_clue"],
+            "quest_updates": [
+              {
+                "quest_id": "missing_courier",
+                "progress_flags": ["found_first_clue"],
+                "current_objective": "Entscheide, wem du im Gasthaus von dem Hinweis berichten willst.",
+                "summary_append": "Vor dem Gasthaus findest du einen zerrissenen Lederfaden und Spuren eines abrupten Handgemenges."
+              }
+            ],
+            "status_message": "Du findest einen ersten verwertbaren Hinweis.",
+            "prompt_hint": "Beschreibe den Lederfaden, die verwischten Spuren und das Gefuehl, dass hier etwas abrupt endete.",
+            "fallback_narration": "Zwischen Schlamm und Hufabdruecken entdeckst du einen zerrissenen Lederfaden sowie eine verschobene Spur, die nicht zu einem ruhigen Aufbruch passt."
+          },
+          "clue": {
+            "discovered_flags": ["found_first_clue"],
+            "quest_updates": [
+              {
+                "quest_id": "missing_courier",
+                "progress_flags": ["found_first_clue"],
+                "current_objective": "Entscheide, wem du im Gasthaus von dem Hinweis berichten willst.",
+                "summary_append": "Vor dem Gasthaus findest du einen zerrissenen Lederfaden und Spuren eines abrupten Handgemenges."
+              }
+            ],
+            "status_message": "Du sicherst den ersten Hinweis am Wegesrand.",
+            "prompt_hint": "Beschreibe konkret den Lederfaden und die Kampfspur, ohne den Fall sofort aufgeloest wirken zu lassen.",
+            "fallback_narration": "Als du den Schlamm genauer pruefst, wird klar, dass hier nicht nur jemand vorbeiritt; etwas oder jemand wurde ploetzlich aus dem Takt gebracht."
+          }
+        }
       }
     }
   ]

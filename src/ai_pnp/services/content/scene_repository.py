@@ -1,3 +1,4 @@
+import copy
 import json
 from pathlib import Path
 
@@ -18,7 +19,7 @@ class SceneRepository:
             return json.load(handle)
 
     def get_scene(self, scene_id: str) -> dict:
-        return dict(self._scenes[scene_id])
+        return copy.deepcopy(self._scenes[scene_id])
 
     def build_initial_world_state(self) -> WorldState:
         start_scene_id = self._world_seed["start_scene_id"]
@@ -31,9 +32,26 @@ class SceneRepository:
             discovered_flags=[],
         )
 
+    def get_enter_effect(self, scene_id: str) -> dict:
+        scene = self.get_scene(scene_id)
+        return copy.deepcopy(scene.get("enter_effect", {}))
+
+    def get_action_effect(self, scene_id: str, intent: str, subject: str) -> dict:
+        scene = self.get_scene(scene_id)
+        effects = scene.get("action_effects", {}).get(intent, {})
+        if subject in effects:
+            return copy.deepcopy(effects[subject])
+        if "default" in effects:
+            return copy.deepcopy(effects["default"])
+        return {}
+
+    def resolve_action_target(self, scene_id: str, intent: str, subject: str) -> str | None:
+        effect = self.get_action_effect(scene_id, intent, subject)
+        return effect.get("target_scene_id")
+
     def resolve_move_target(self, scene_id: str, normalized_action: str) -> str | None:
         scene = self.get_scene(scene_id)
-        for keyword, target in scene.get("exits", {}).items():
-            if keyword in normalized_action:
-                return target
+        for exit_rule in scene.get("exits", []):
+            if any(keyword in normalized_action for keyword in exit_rule.get("keywords", [])):
+                return exit_rule["target_scene_id"]
         return None

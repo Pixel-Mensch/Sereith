@@ -1,0 +1,12 @@
+{
+  "quests": [
+    {
+      "quest_id": "missing_courier",
+      "title": "Der verschwundene Kurier",
+      "status": "active",
+      "summary": "Ein Kurier ist auf dem letzten Abschnitt der Heerstrasse verschwunden.",
+      "current_objective": "Finde im Gasthaus heraus, was ueber den Kurier bekannt ist.",
+      "progress_flags": []
+    }
+  ]
+}

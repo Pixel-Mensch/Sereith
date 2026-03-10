@@ -7,29 +7,29 @@ Relevant files: `ARCHITECTURE.md`, `PROJECT_STATE.md`, `src/ai_pnp/`, `src/ai/`,
 Expected outcome: One clearly preferred application path and explicit handling of parallel starter folders.
 Notes: Current entry point and runtime now use `src/ai_pnp/engine/`, but parallel folders still exist.
 
-2. Replace the placeholder narrator client with a local model adapter.
-Status: Pending
-Relevant files: `src/ai_pnp/services/llm/narrator_client.py`, `src/ai_pnp/services/llm/prompt_builder.py`
-Expected outcome: Local model-backed narration with a stable adapter boundary.
-Notes: Ollama is the documented primary candidate, but the adapter boundary should remain model-agnostic.
+2. Verify the live Ollama path with a running local model.
+Status: In progress
+Relevant files: `src/ai_pnp/services/llm/narrator_client.py`, `src/ai_pnp/services/llm/ollama_client.py`, `src/ai_pnp/data/config/app_config.json`
+Expected outcome: Confirmed real model narration from the local Ollama service without losing the safe fallback path.
+Notes: In the latest local validation run, the service was not reachable, so only the fallback path was verified.
 
 3. Deepen the deterministic engine path for actions and state progression.
 Status: Pending
 Relevant files: `src/ai_pnp/engine/flow/turn_processor.py`, `src/ai_pnp/engine/state/state_updater.py`, `src/ai_pnp/services/content/scene_repository.py`
 Expected outcome: Richer state updates, clearer scene transitions, and stronger engine-owned truth.
-Notes: The current scaffold covers observe, talk, stealth, move, and freeform at a first-pass level.
+Notes: The current scaffold supports the first inn/courier mini-flow and simple quest progress flags.
 
 4. Move persistence toward the documented MVP storage direction.
 Status: Pending
 Relevant files: `src/ai_pnp/services/storage/save_repository.py`, future `db/sqlite/`
 Expected outcome: SQLite-backed game state with clear save/load behavior.
-Notes: Current verified state is JSON autosave only.
+Notes: Current verified state is JSON save/load with slot naming via `save [name]` and `load [name]`.
 
-5. Expand tests around commands, persistence, and scene transitions.
+5. Expand tests around narrator failure modes, quest branching, and content regressions.
 Status: Pending
 Relevant files: `tests/`
 Expected outcome: Small reliable regression coverage for the prototype path.
-Notes: Current verified coverage is one engine smoke test.
+Notes: Current verified coverage includes four focused engine tests.
 
 6. Refresh the lightweight module maps after the runtime path change.
 Status: Pending
